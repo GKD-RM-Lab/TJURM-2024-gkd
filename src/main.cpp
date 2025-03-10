@@ -43,15 +43,18 @@ int main(int argc, char** argv) {
     //DEBUG 暂时关闭control
     // control->autoaim();
 
-    #if defined(TJURM_INFANTRY) || defined(TJURM_BALANCE)
-    pipeline->autoaim_combine();
-    std::cout << "set INFANTRY" << std::endl;  
-    #endif
-
-    #if defined(TJURM_SENTRY) || defined(TJURM_DRONSE) || defined(TJURM_HERO)
+    //3v3没能量机关，直接baseline
     pipeline->autoaim_baseline();
-    std::cout << "set SENTRY" << std::endl;  
-    #endif
+
+    // #if defined(TJURM_INFANTRY) || defined(TJURM_BALANCE)
+    // pipeline->autoaim_combine();
+    // std::cout << "set INFANTRY" << std::endl;  
+    // #endif
+
+    // #if defined(TJURM_SENTRY) || defined(TJURM_DRONSE) || defined(TJURM_HERO)
+    // pipeline->autoaim_baseline();
+    // std::cout << "set SENTRY" << std::endl;  
+    // #endif
 
     while(Data::manu_fire) {
         std::cin.get();
