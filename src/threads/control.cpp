@@ -28,7 +28,8 @@ void Control::send_single(double yaw, double pitch, bool fire, rm::ArmorID id) {
     if (status) {
         rm::message("Control error: " + std::to_string(status), rm::MSG_ERROR);
         if (access(port_name_.c_str(), F_OK) < 0) {
-            init_serial();
+            //DEBUG 暂时关闭serial
+            // init_serial();
             status = 0;
         } else {
             status = (int)rm::restartSerialPort(file_descriptor_, port_name_);

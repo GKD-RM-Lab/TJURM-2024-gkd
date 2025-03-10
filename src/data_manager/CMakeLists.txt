@@ -7,7 +7,7 @@ set(JSON_BuildTests OFF CACHE INTERNAL "")
 add_subdirectory(${CMAKE_SOURCE_DIR}/libs/json json_binary_dir)
 set(JSON_LIBS 
         nlohmann_json::nlohmann_json
-        -lgxiapi
+        # -lgxiapi
         -lpthread
 )
 

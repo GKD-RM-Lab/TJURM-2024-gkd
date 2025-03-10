@@ -10,7 +10,7 @@ add_library(threads
 
 set(JSON_LIBS 
         nlohmann_json::nlohmann_json
-        -lgxiapi
+        # -lgxiapi
         -lpthread
 )
 

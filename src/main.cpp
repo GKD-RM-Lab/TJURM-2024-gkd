@@ -38,15 +38,19 @@ int main(int argc, char** argv) {
     rm::message_init("autoaim");
     init_debug();
     init_attack();
-    if (Data::serial_flag) init_serial();
-    control->autoaim();
+    //DEBUG 暂时关闭serial
+    // if (Data::serial_flag) init_serial();
+    //DEBUG 暂时关闭control
+    // control->autoaim();
 
     #if defined(TJURM_INFANTRY) || defined(TJURM_BALANCE)
-    pipeline->autoaim_combine();  
+    pipeline->autoaim_combine();
+    std::cout << "set INFANTRY" << std::endl;  
     #endif
 
     #if defined(TJURM_SENTRY) || defined(TJURM_DRONSE) || defined(TJURM_HERO)
     pipeline->autoaim_baseline();
+    std::cout << "set SENTRY" << std::endl;  
     #endif
 
     while(Data::manu_fire) {
@@ -59,5 +63,6 @@ int main(int argc, char** argv) {
     rm::message("Main thread hang up!", rm::MSG_OK);
     std::unique_lock<std::mutex> lock(hang_up_mutex);
     hang_up_cv.wait(lock);
+    std::cout << "end" << std::endl;
     return 0;
 }
