@@ -17,8 +17,8 @@ add_definitions(-DTJURM_INFANTRY)
 # add_definitions(-DTJURM_DRONSE)
 
 # CUDA
-find_package(CUDA REQUIRED)
-include_directories(/usr/local/cuda/include)
+# find_package(CUDA REQUIRED)
+# include_directories(/usr/local/cuda/include)
 
 # OpenRM
 find_package(OpenRM REQUIRED)

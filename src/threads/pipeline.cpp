@@ -2,12 +2,12 @@
 #include <thread>
 
 void Pipeline::autoaim_fourpoints() {
-    bool cuda_status = rm::initCudaStream(&this->detect_stream_);
-    cuda_status = rm::initCudaStream(&this->resize_stream_);
-    if (!cuda_status) {
-        rm::message("Failed to initialize CUDA stream", rm::MSG_ERROR);
-        exit(-1);
-    }
+    // bool cuda_status = rm::initCudaStream(&this->detect_stream_);
+    // cuda_status = rm::initCudaStream(&this->resize_stream_);
+    // if (!cuda_status) {
+    //     rm::message("Failed to initialize CUDA stream", rm::MSG_ERROR);
+    //     exit(-1);
+    // }
 
     Data::armor_mode = true;
     Data::rune_mode = false;
@@ -17,20 +17,20 @@ void Pipeline::autoaim_fourpoints() {
     preprocessor_over_ = false;
     detector_over_ = false;
     
-    std::thread preprocessor_thread(
-        &Pipeline::preprocessor_fourpoints_thread, this,
-        std::ref(preprocessor_mutex_), std::ref(preprocessor_over_), std::ref(preprocessor_register_));
+    // std::thread preprocessor_thread(
+    //     &Pipeline::preprocessor_fourpoints_thread, this,
+    //     std::ref(preprocessor_mutex_), std::ref(preprocessor_over_), std::ref(preprocessor_register_));
     
-    std::thread detector_thread(
-        &Pipeline::detector_fourpoints_thread, this,
-        std::ref(preprocessor_mutex_), std::ref(preprocessor_over_), std::ref(preprocessor_register_));
+    // std::thread detector_thread(
+    //     &Pipeline::detector_fourpoints_thread, this,
+    //     std::ref(preprocessor_mutex_), std::ref(preprocessor_over_), std::ref(preprocessor_register_));
 
     std::thread recording_thread(
         &Pipeline::recording_thread, this,
         std::ref(record_mutex_), std::ref(record_in_), std::ref(record_register_));
 
-    preprocessor_thread.detach();
-    detector_thread.detach();
+    // preprocessor_thread.detach();
+    // detector_thread.detach();
     recording_thread.detach();
 
     if (Data::image_flag) {
@@ -40,12 +40,12 @@ void Pipeline::autoaim_fourpoints() {
 }
 
 void Pipeline::autoaim_baseline() {
-    bool cuda_status = rm::initCudaStream(&this->detect_stream_);
-    cuda_status = rm::initCudaStream(&this->resize_stream_);
-    if (!cuda_status) {
-        rm::message("Failed to initialize CUDA stream", rm::MSG_ERROR);
-        exit(-1);
-    }
+    // bool cuda_status = rm::initCudaStream(&this->detect_stream_);
+    // cuda_status = rm::initCudaStream(&this->resize_stream_);
+    // if (!cuda_status) {
+    //     rm::message("Failed to initialize CUDA stream", rm::MSG_ERROR);
+    //     exit(-1);
+    // }
 
     Data::armor_mode = true;
     Data::rune_mode = false;
@@ -55,14 +55,14 @@ void Pipeline::autoaim_baseline() {
     preprocessor_over_ = false;
     detector_over_ = false;
     
-    std::thread preprocessor_baseline_thread(
-        &Pipeline::preprocessor_baseline_thread, this,
-        std::ref(preprocessor_mutex_), std::ref(preprocessor_over_), std::ref(preprocessor_register_));
+    // std::thread preprocessor_baseline_thread(
+    //     &Pipeline::preprocessor_baseline_thread, this,
+    //     std::ref(preprocessor_mutex_), std::ref(preprocessor_over_), std::ref(preprocessor_register_));
     
-    std::thread detector_baseline_thread(
-        &Pipeline::detector_baseline_thread, this,
-        std::ref(preprocessor_mutex_), std::ref(preprocessor_over_), std::ref(preprocessor_register_),
-        std::ref(detector_mutex_), std::ref(detector_over_), std::ref(detector_register_));
+    // std::thread detector_baseline_thread(
+    //     &Pipeline::detector_baseline_thread, this,
+    //     std::ref(preprocessor_mutex_), std::ref(preprocessor_over_), std::ref(preprocessor_register_),
+    //     std::ref(detector_mutex_), std::ref(detector_over_), std::ref(detector_register_));
 
     std::thread tracker_baseline_thread(
         &Pipeline::tracker_baseline_thread, this,
@@ -72,8 +72,8 @@ void Pipeline::autoaim_baseline() {
         &Pipeline::recording_thread, this,
         std::ref(record_mutex_), std::ref(record_in_), std::ref(record_register_));
 
-    preprocessor_baseline_thread.detach();
-    detector_baseline_thread.detach();
+    // preprocessor_baseline_thread.detach();
+    // detector_baseline_thread.detach();
     tracker_baseline_thread.detach();
     recording_thread.detach();
 
@@ -84,12 +84,12 @@ void Pipeline::autoaim_baseline() {
 }
 
 void Pipeline::autoaim_rune() {
-    bool cuda_status = rm::initCudaStream(&this->detect_stream_);
-    cuda_status = rm::initCudaStream(&this->resize_stream_);
-    if (!cuda_status) {
-        rm::message("Failed to initialize CUDA stream", rm::MSG_ERROR);
-        exit(-1);
-    }
+    // bool cuda_status = rm::initCudaStream(&this->detect_stream_);
+    // cuda_status = rm::initCudaStream(&this->resize_stream_);
+    // if (!cuda_status) {
+    //     rm::message("Failed to initialize CUDA stream", rm::MSG_ERROR);
+    //     exit(-1);
+    // }
 
     Data::armor_mode = false;
     Data::rune_mode = true;
@@ -99,14 +99,14 @@ void Pipeline::autoaim_rune() {
     preprocessor_over_ = false;
     detector_over_ = false;   
     
-    std::thread preprocessor_thread(
-        &Pipeline::preprocessor_rune_thread, this,
-        std::ref(preprocessor_mutex_), std::ref(preprocessor_over_), std::ref(preprocessor_register_));
+    // std::thread preprocessor_thread(
+    //     &Pipeline::preprocessor_rune_thread, this,
+    //     std::ref(preprocessor_mutex_), std::ref(preprocessor_over_), std::ref(preprocessor_register_));
     
-    std::thread detector_thread(
-        &Pipeline::detector_rune_thread, this,
-        std::ref(preprocessor_mutex_), std::ref(preprocessor_over_), std::ref(preprocessor_register_),
-        std::ref(detector_mutex_), std::ref(detector_over_), std::ref(detector_register_));
+    // std::thread detector_thread(
+    //     &Pipeline::detector_rune_thread, this,
+    //     std::ref(preprocessor_mutex_), std::ref(preprocessor_over_), std::ref(preprocessor_register_),
+    //     std::ref(detector_mutex_), std::ref(detector_over_), std::ref(detector_register_));
 
     std::thread tracker_thread(
         &Pipeline::tracker_rune_thread, this,
@@ -116,8 +116,8 @@ void Pipeline::autoaim_rune() {
         &Pipeline::recording_thread, this,
         std::ref(record_mutex_), std::ref(record_in_), std::ref(record_register_));
 
-    preprocessor_thread.detach();
-    detector_thread.detach();
+    // preprocessor_thread.detach();
+    // detector_thread.detach();
     tracker_thread.detach();
     recording_thread.detach();
 
@@ -128,12 +128,12 @@ void Pipeline::autoaim_rune() {
 }
 
 void Pipeline::autoaim_combine() {
-    bool cuda_status = rm::initCudaStream(&this->detect_stream_);
-    cuda_status = rm::initCudaStream(&this->resize_stream_);
-    if (!cuda_status) {
-        rm::message("Failed to initialize CUDA stream", rm::MSG_ERROR);
-        exit(-1);
-    }
+    // bool cuda_status = rm::initCudaStream(&this->detect_stream_);
+    // cuda_status = rm::initCudaStream(&this->resize_stream_);
+    // if (!cuda_status) {
+    //     rm::message("Failed to initialize CUDA stream", rm::MSG_ERROR);
+    //     exit(-1);
+    // }
 
     Data::armor_mode = true;
     Data::rune_mode = false;
@@ -143,14 +143,14 @@ void Pipeline::autoaim_combine() {
     preprocessor_over_ = false;
     detector_over_ = false;
     
-    std::thread preprocessor_baseline_thread(
-        &Pipeline::preprocessor_baseline_thread, this,
-        std::ref(preprocessor_mutex_), std::ref(preprocessor_over_), std::ref(preprocessor_register_));
+    // std::thread preprocessor_baseline_thread(
+    //     &Pipeline::preprocessor_baseline_thread, this,
+    //     std::ref(preprocessor_mutex_), std::ref(preprocessor_over_), std::ref(preprocessor_register_));
     
-    std::thread detector_baseline_thread(
-        &Pipeline::detector_baseline_thread, this,
-        std::ref(preprocessor_mutex_), std::ref(preprocessor_over_), std::ref(preprocessor_register_),
-        std::ref(detector_mutex_), std::ref(detector_over_), std::ref(detector_register_));
+    // std::thread detector_baseline_thread(
+    //     &Pipeline::detector_baseline_thread, this,
+    //     std::ref(preprocessor_mutex_), std::ref(preprocessor_over_), std::ref(preprocessor_register_),
+    //     std::ref(detector_mutex_), std::ref(detector_over_), std::ref(detector_register_));
 
     std::thread tracker_baseline_thread(
         &Pipeline::tracker_baseline_thread, this,
@@ -160,30 +160,30 @@ void Pipeline::autoaim_combine() {
         &Pipeline::recording_thread, this,
         std::ref(record_mutex_), std::ref(record_in_), std::ref(record_register_));
 
-    preprocessor_baseline_thread.detach();
-    detector_baseline_thread.detach();
+    // preprocessor_baseline_thread.detach();
+    // detector_baseline_thread.detach();
     tracker_baseline_thread.detach();
     recording_thread.detach();
 
     #if defined(TJURM_INFANTRY) || defined(TJURM_BALANCE)
-    if (Data::auto_rune || Data::manu_rune) {
-        std::thread preprocessor_rune_thread(
-        &Pipeline::preprocessor_rune_thread, this,
-        std::ref(preprocessor_mutex_), std::ref(preprocessor_over_), std::ref(preprocessor_register_));
+    // if (Data::auto_rune || Data::manu_rune) {
+    //     std::thread preprocessor_rune_thread(
+    //     &Pipeline::preprocessor_rune_thread, this,
+    //     std::ref(preprocessor_mutex_), std::ref(preprocessor_over_), std::ref(preprocessor_register_));
     
-        std::thread detector_rune_thread(
-            &Pipeline::detector_rune_thread, this,
-            std::ref(preprocessor_mutex_), std::ref(preprocessor_over_), std::ref(preprocessor_register_),
-            std::ref(detector_mutex_), std::ref(detector_over_), std::ref(detector_register_));
+    //     std::thread detector_rune_thread(
+    //         &Pipeline::detector_rune_thread, this,
+    //         std::ref(preprocessor_mutex_), std::ref(preprocessor_over_), std::ref(preprocessor_register_),
+    //         std::ref(detector_mutex_), std::ref(detector_over_), std::ref(detector_register_));
 
-        std::thread tracker_rune_thread(
-            &Pipeline::tracker_rune_thread, this,
-            std::ref(detector_mutex_), std::ref(detector_over_), std::ref(detector_register_));
+    //     std::thread tracker_rune_thread(
+    //         &Pipeline::tracker_rune_thread, this,
+    //         std::ref(detector_mutex_), std::ref(detector_over_), std::ref(detector_register_));
 
-        preprocessor_rune_thread.detach();
-        detector_rune_thread.detach();
-        tracker_rune_thread.detach();
-    }
+    //     preprocessor_rune_thread.detach();
+    //     detector_rune_thread.detach();
+    //     tracker_rune_thread.detach();
+    // }
     #endif
 
     if (Data::image_flag) {

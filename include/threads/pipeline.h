@@ -38,28 +38,28 @@ public:
     bool UI(std::shared_ptr<rm::Frame> frame);
     bool monitor(std::shared_ptr<rm::Frame> frame);
 
-    void preprocessor_fourpoints_thread(
-        std::mutex& mutex_out, bool& flag_out, std::shared_ptr<rm::Frame>& frame_out);
+    // void preprocessor_fourpoints_thread(
+    //     std::mutex& mutex_out, bool& flag_out, std::shared_ptr<rm::Frame>& frame_out);
 
-    void detector_fourpoints_thread(
-        std::mutex& mutex_in, bool& flag_in, std::shared_ptr<rm::Frame>& frame_in);
+    // void detector_fourpoints_thread(
+    //     std::mutex& mutex_in, bool& flag_in, std::shared_ptr<rm::Frame>& frame_in);
 
-    void preprocessor_rune_thread(
-        std::mutex& mutex_out, bool& flag_out, std::shared_ptr<rm::Frame>& frame_out);
+    // void preprocessor_rune_thread(
+    //     std::mutex& mutex_out, bool& flag_out, std::shared_ptr<rm::Frame>& frame_out);
 
-    void detector_rune_thread(
-        std::mutex& mutex_in, bool& flag_in, std::shared_ptr<rm::Frame>& frame_in, 
-        std::mutex& mutex_out, bool& flag_out, std::shared_ptr<rm::Frame>& frame_out);
+    // void detector_rune_thread(
+    //     std::mutex& mutex_in, bool& flag_in, std::shared_ptr<rm::Frame>& frame_in, 
+    //     std::mutex& mutex_out, bool& flag_out, std::shared_ptr<rm::Frame>& frame_out);
 
     void tracker_rune_thread(
         std::mutex& mutex_in, bool& flag_in, std::shared_ptr<rm::Frame>& frame_in);
 
-    void preprocessor_baseline_thread(
-        std::mutex& mutex_out, bool& flag_out, std::shared_ptr<rm::Frame>& frame_out);
+    // void preprocessor_baseline_thread(
+    //     std::mutex& mutex_out, bool& flag_out, std::shared_ptr<rm::Frame>& frame_out);
 
-    void detector_baseline_thread(
-        std::mutex& mutex_in, bool& flag_in, std::shared_ptr<rm::Frame>& frame_in,
-        std::mutex& mutex_out, bool& flag_out, std::shared_ptr<rm::Frame>& frame_out);
+    // void detector_baseline_thread(
+    //     std::mutex& mutex_in, bool& flag_in, std::shared_ptr<rm::Frame>& frame_in,
+    //     std::mutex& mutex_out, bool& flag_out, std::shared_ptr<rm::Frame>& frame_out);
 
     void tracker_baseline_thread(
         std::mutex& mutex_in, bool& flag_in, std::shared_ptr<rm::Frame>& frame_in);
@@ -113,10 +113,10 @@ private:
     bool imshow_in_ = false;
     bool record_in_ = false;
 
-    cudaStream_t resize_stream_;
-    cudaStream_t detect_stream_;
-    nvinfer1::IExecutionContext* armor_context_;
-    nvinfer1::IExecutionContext* rune_context_;
+    // cudaStream_t resize_stream_;
+    // cudaStream_t detect_stream_;
+    // nvinfer1::IExecutionContext* armor_context_;
+    // nvinfer1::IExecutionContext* rune_context_;
 
     float* armor_input_device_buffer_ = nullptr;
     float* armor_output_device_buffer_ = nullptr;
