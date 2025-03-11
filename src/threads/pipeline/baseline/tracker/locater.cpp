@@ -116,9 +116,16 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
         target.armor_id = armor.id;
         target.armor_size = armor.size;
 
-        if (Data::plus_pnp && false) {
+        if (Data::plus_pnp) {
+            /*debug 交换点序*/
+            std::vector<cv::Point2f> new_four_points;
+            new_four_points.push_back(armor.four_points[2]);
+            new_four_points.push_back(armor.four_points[1]);
+            new_four_points.push_back(armor.four_points[3]);
+            new_four_points.push_back(armor.four_points[0]);
+
             target.armor_yaw_world = rm::solveYawPnP(
-                frame->yaw, intrinsic_matrix, distortion_coeffs, trans_pnp2head, rotate_pnp2head, pose_world, *Armor3D, armor.four_points, 
+                frame->yaw, intrinsic_matrix, distortion_coeffs, trans_pnp2head, rotate_pnp2head, pose_world, *Armor3D, new_four_points, 
                 rotate_head2world, trans_head2world, armor.id, plus_pnp_cost_image);
             target.pose_world = pose_world;
             /*debug*/
