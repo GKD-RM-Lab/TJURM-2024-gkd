@@ -4,11 +4,16 @@
 #ifdef Status
 #undef Status
 #endif
-
 #include <iostream>
 // opencv
 #include "opencv2/opencv.hpp"
 #include <opencv2/highgui/highgui.hpp>
+
+#ifdef Success
+#undef Success
+#endif
+
+#include <Eigen/Dense>  
 
 
 typedef struct
@@ -25,6 +30,7 @@ typedef struct
     int img_count;          //ok
     int sample_period;      //ok
     std::string calib_yaml_path;    //ok
+    std::string camera_intrinsics_path;
     /*相机*/
     float cam_gain;         //ok
     int cam_exptime;        //ok
@@ -36,6 +42,11 @@ typedef struct
     float armor_small_w;    //小装甲板宽    ok
     float armor_large_h;    //大装甲板高    ok
     float armor_large_w;    //大装甲板宽    ok
+    /*相机参数*/
+    cv::Mat intrinsic_matrix;
+    cv::Mat distortion_coeffs;
+    Eigen::Matrix3d rotate_pnp2hea;
+    Eigen::Matrix4d trans_pnp2head;
 
 } parameter_loader_t;
 

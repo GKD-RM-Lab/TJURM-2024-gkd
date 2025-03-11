@@ -1,0 +1,13 @@
+%YAML:1.0
+---
+rotate_pnp2hea: !!opencv-matrix
+   rows: 3
+   cols: 3
+   dt: d
+   data: [ 0., 0., 0., 0., 0., 0., 0., 0., 0. ]
+trans_pnp2head: !!opencv-matrix
+   rows: 4
+   cols: 4
+   dt: d
+   data: [ 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+       0. ]

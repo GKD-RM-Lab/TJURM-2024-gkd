@@ -1,6 +1,9 @@
 #include "threads/pipeline.h"
 #include "garage/garage.h"
 
+//前端参数loader
+#include "parameter_loader.hpp"
+
 static std::vector<cv::Point3f>* BigArmorRed3D, *SmallArmorRed3D;
 static std::vector<cv::Point3f>* BigArmorBlue3D, *SmallArmorBlue3D;
 static bool   plus_pnp_cost_image;
@@ -65,13 +68,24 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
     Eigen::Matrix3d rotate_pnp2head, rotate_head2world;
     Eigen::Matrix4d trans_pnp2head, trans_head2world;
 
-    rm::Camera* camera = Data::camera[frame->camera_id];
+    //相机内参
+    cv::Mat intrinsic_matrix;
+    cv::Mat distortion_coeffs;
 
-    rotate_pnp2head = camera->Rotate_pnp2head;
-    rm::tf_rotate_head2world(rotate_head2world, frame->yaw, frame->pitch, frame->roll);
+    //相机外参
+    // Eigen::Matrix3d rotate_pnp2hea;
+    // Eigen::Matrix4d trans_pnp2head;
 
-    trans_pnp2head = camera->Trans_pnp2head;
-    rm::tf_trans_head2world(trans_head2world, frame->yaw, frame->pitch, frame->roll);
+    //TODO
+    //参数填充：intrinsic_matrix， distortion_coeffs， rotate_pnp2head， trans_pnp2head
+
+    // rm::Camera* camera = Data::camera[frame->camera_id];
+
+    // rotate_pnp2head = camera->Rotate_pnp2head;
+    // rm::tf_rotate_head2world(rotate_head2world, frame->yaw, frame->pitch, frame->roll);
+
+    // trans_pnp2head = camera->Trans_pnp2head;
+    // rm::tf_trans_head2world(trans_head2world, frame->yaw, frame->pitch, frame->roll);
 
 
     for(auto& armor : frame->armor_list) {
@@ -103,7 +117,7 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
 
         if (Data::plus_pnp) {
             target.armor_yaw_world = rm::solveYawPnP(
-                frame->yaw, camera, pose_world, *Armor3D, armor.four_points, 
+                frame->yaw, intrinsic_matrix, distortion_coeffs, trans_pnp2head, rotate_pnp2head, pose_world, *Armor3D, armor.four_points, 
                 rotate_head2world, trans_head2world, armor.id, plus_pnp_cost_image);
             target.pose_world = pose_world;
             

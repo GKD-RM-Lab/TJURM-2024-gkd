@@ -1,0 +1,26 @@
+%YAML:1.0
+---
+# model_path_xml: "/etc/openrm/models/RMyolo-v7-new/RMyolov7-new.xml"
+# model_path_bin: "/etc/openrm/models/RMyolo-v7-new/RMyolov7-new.bin"
+
+model_path_xml: "/etc/openrm/models/RMyolov7-best-fp32/rmyolo-v7-best.xml"
+model_path_bin: "/etc/openrm/models/RMyolov7-best-fp32/rmyolo-v7-best.bin"
+
+
+conf_threshold: 0.35
+rect_cut: 0
+boardSize_h: 7
+boardSize_w: 9
+squareSize: 15
+img_count: 60
+sample_period: 20
+calib_yaml_path: "../config/intrinsics.yaml"
+cam_gain: 15.2
+cam_exptime: 6000
+framerate: 120
+imshow_en: 1
+debug_info: 1
+armor_small_h: 50
+armor_small_w: 135
+armor_large_h: 50
+armor_large_w: 200
