@@ -7,5 +7,5 @@ mkdir build
 cd build
 cmake ..
 make -j
-# ./cl_yolo --calibration
-./cl_yolo
+./cl_yolo --calibration
+# ./cl_yolo

@@ -72,9 +72,12 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
     cv::Mat intrinsic_matrix;
     cv::Mat distortion_coeffs;
 
-    while(1);
     //TODO
     //参数填充：intrinsic_matrix， distortion_coeffs， rotate_pnp2head， trans_pnp2head
+    intrinsic_matrix = params.intrinsic_matrix;
+    distortion_coeffs = params.distortion_coeffs;
+    rotate_pnp2head = params.rotate_pnp2hea;
+    trans_pnp2head = params.trans_pnp2head;
 
     // rm::Camera* camera = Data::camera[frame->camera_id];
 
@@ -150,6 +153,5 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
         if (Data::image_flag) imshow(frame);
         return false;
     }
-    
     return true;
 }

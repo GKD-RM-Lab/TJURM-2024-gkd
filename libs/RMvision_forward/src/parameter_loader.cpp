@@ -113,7 +113,14 @@ int yaml_load(const std::string& filepath, parameter_loader_t& params) {
 
     fs.release();
     std::cout << "参数已从 " << filepath << " 加载" << std::endl;
+    std::cout << "trans_pnp2head" << std::endl;
     std::cout << params.trans_pnp2head << std::endl;
+    std::cout << "rotate_pnp2hea" << std::endl;
+    std::cout << params.rotate_pnp2hea << std::endl;
+    std::cout << "intrinsic_matrix" << std::endl;
+    std::cout << params.intrinsic_matrix << std::endl;
+    std::cout << "distortion_coeffs" << std::endl;
+    std::cout << params.distortion_coeffs << std::endl;
     return 0;
 }
 
