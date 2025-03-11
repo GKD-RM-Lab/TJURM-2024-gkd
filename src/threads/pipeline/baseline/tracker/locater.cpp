@@ -82,10 +82,10 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
     // rm::Camera* camera = Data::camera[frame->camera_id];
 
     // rotate_pnp2head = camera->Rotate_pnp2head;
-    // rm::tf_rotate_head2world(rotate_head2world, frame->yaw, frame->pitch, frame->roll);
+    rm::tf_rotate_head2world(rotate_head2world, frame->yaw, frame->pitch, frame->roll);
 
     // trans_pnp2head = camera->Trans_pnp2head;
-    // rm::tf_trans_head2world(trans_head2world, frame->yaw, frame->pitch, frame->roll);
+    rm::tf_trans_head2world(trans_head2world, frame->yaw, frame->pitch, frame->roll);
 
 
     for(auto& armor : frame->armor_list) {
@@ -93,8 +93,9 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
             continue;
         }
 
-        auto objptr = garage->getObj(armor.id);
-        rm::ArmorSize obj_size = objptr->getArmorSize();
+        // auto objptr = garage->getObj(armor.id);
+        // rm::ArmorSize obj_size = objptr->getArmorSize();
+        rm::ArmorSize obj_size = armor.size;
         rm::ArmorSize curr_size = obj_size;
         if (obj_size == rm::ARMOR_SIZE_UNKNOWN) curr_size = armor.size;
         else curr_size = obj_size;
@@ -115,18 +116,52 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
         target.armor_id = armor.id;
         target.armor_size = armor.size;
 
-        if (Data::plus_pnp) {
+        if (Data::plus_pnp && false) {
             target.armor_yaw_world = rm::solveYawPnP(
                 frame->yaw, intrinsic_matrix, distortion_coeffs, trans_pnp2head, rotate_pnp2head, pose_world, *Armor3D, armor.four_points, 
                 rotate_head2world, trans_head2world, armor.id, plus_pnp_cost_image);
             target.pose_world = pose_world;
-            
+            /*debug*/
+            std::cout << "pnp_in" << std::endl;
+            std::cout << "frame->yaw" << frame->yaw << std::endl;
+            std::cout << "intrinsic_matrix" << intrinsic_matrix << std::endl;
+            std::cout << "distortion_coeffs" << distortion_coeffs << std::endl;
+            std::cout << "trans_pnp2head" << trans_pnp2head << std::endl;
+            std::cout << "*Armor3D" << *Armor3D << std::endl;
+            std::cout << "armor.four_points" << armor.four_points << std::endl;
+            std::cout << "rotate_head2world" << rotate_head2world << std::endl;
+            std::cout << "trans_head2world" << trans_head2world << std::endl;
+            std::cout << "armor.id" << armor.id << std::endl;
+            std::cout << "plus_pnp_cost_image" << plus_pnp_cost_image << std::endl;
+            std::cout << "pnp_out" << std::endl;
+            std::cout << "pose_world" << pose_world << std::endl;
+            std::cout << "----------------------------------------------" << std::endl;
         } else {
             try {
-                cv::solvePnP(*Armor3D, armor.four_points,
-                            Data::camera[frame->camera_id]->intrinsic_matrix,
-                            Data::camera[frame->camera_id]->distortion_coeffs,
+
+            /*debug 交换点序*/
+            std::vector<cv::Point2f> new_four_points;
+            new_four_points.push_back(armor.four_points[2]);
+            new_four_points.push_back(armor.four_points[1]);
+            new_four_points.push_back(armor.four_points[3]);
+            new_four_points.push_back(armor.four_points[0]);
+
+
+                cv::solvePnP(*Armor3D, new_four_points,
+                            intrinsic_matrix,
+                            distortion_coeffs,
                             rvec, tvec, false, cv::SOLVEPNP_IPPE);
+            /*debug*/
+            std::cout << "pnp_in" << std::endl;
+            std::cout << "*Armor3D" << *Armor3D << std::endl;
+            std::cout << "armor.four_point" << armor.four_points << std::endl;
+            std::cout << "intrinsic_matrix" << intrinsic_matrix << std::endl;
+            std::cout << "distortion_coeffs" << distortion_coeffs << std::endl;
+            std::cout << "pnp_out" << std::endl;
+            std::cout << "rvec" << rvec << std::endl;
+            std::cout << "tvec" << tvec << std::endl;
+            std::cout << "----------------------------------------------" << std::endl;
+
             } catch (cv::Exception e) {
                 rm::message("solvePnP error", rm::MSG_ERROR);
                 continue;
