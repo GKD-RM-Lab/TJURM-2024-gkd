@@ -54,7 +54,7 @@ void Pipeline::tracker_baseline_thread(
         
         tp1 = getTime();
         bool track_flag = true;
-        if (track_flag) track_flag = pointer(frame);
+        if (track_flag) track_flag = pointer(frame);    //ok
         continue;
         if (track_flag) track_flag = locater(frame);
         if (track_flag) track_flag = updater(frame);

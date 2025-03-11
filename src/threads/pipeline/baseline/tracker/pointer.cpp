@@ -96,11 +96,7 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
         binary_ratio = (*param)["Points"]["Threshold"]["RatioBlue"];
     }
 
-    //debug
-    std::vector<rm::Armor> armor_list_local;
-
     for (auto& yolo_rect : frame->yolo_list) {
-        std::cout << "run here" << std::endl;
         rm::Armor armor;
         armor.id = (rm::ArmorID)(armor_class_map[yolo_rect.class_id]);
         armor.color = (rm::ArmorColor)(armor_color_map[yolo_rect.color_id]);
@@ -225,18 +221,18 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
         }
 
         //debug 四点查询
-        std::cout << "4pts size:" << armor.four_points.size() << std::endl;
-        if(armor.four_points.size() >0){
-            std::cout << armor.four_points[0] << std::endl;
-        }
-        if(frame->yolo_list.size()>0)
-        {
-            std::cout << "yolo 4pts size:" << frame->yolo_list[0].four_points.size() << std::endl;
-            if(frame->yolo_list[0].four_points.size() >0){
-                std::cout << frame->yolo_list[0].four_points[0] << std::endl;
-            }
-        }
-        std::cout << "----------------" << std::endl;
+        // std::cout << "4pts size:" << armor.four_points.size() << std::endl;
+        // if(armor.four_points.size() >0){
+        //     std::cout << armor.four_points[0] << std::endl;
+        // }
+        // if(frame->yolo_list.size()>0)
+        // {
+        //     std::cout << "yolo 4pts size:" << frame->yolo_list[0].four_points.size() << std::endl;
+        //     if(frame->yolo_list[0].four_points.size() >0){
+        //         std::cout << frame->yolo_list[0].four_points[0] << std::endl;
+        //     }
+        // }
+        // std::cout << "----------------" << std::endl;
 
         //TODO
         //当YOLO识别出四点的时候，使用YOLO的四点
@@ -251,10 +247,7 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
         setArmorSizeByPoints(armor, armor_size_ratio);
         #endif
 
-        // continue;
-        
-        // armor_list_local.push_back(armor);
-        frame->armor_list.push_back(armor);     //段错误点
+        frame->armor_list.push_back(armor);
         
 
         if (Data::image_flag && Data::ui_flag) {
@@ -276,12 +269,6 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
         }
         
     }
-
-    // //debug
-    // frame->armor_list = armor_list_local; //新的段错误点
-    // // frame->armor_list.assign(armor_list_local.begin(), armor_list_local.end());
-
-
 
     if (frame->armor_list.size() == 0) {
         if (Data::point_skip_flag) rm::message("No armor found", rm::MSG_NOTE);
