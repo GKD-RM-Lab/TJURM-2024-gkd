@@ -5,7 +5,7 @@ int yaml_load(const std::string& filepath, parameter_loader_t& params);
 int para_load(std::string filepath);
 cv::Mat eigenToCvMat3d(const Eigen::Matrix3d& eigenMat);
 cv::Mat eigenToCvMat4d(const Eigen::Matrix4d& eigenMat);
-void readMatricesFromFile(const std::string& filename);
+void readCameraExtrinsics(const std::string& filename);
 void writeMatricesToFile(const std::string& filename);
 void readCameraParametersFromYaml(const std::string& filename);
 
@@ -106,8 +106,14 @@ int yaml_load(const std::string& filepath, parameter_loader_t& params) {
     fs["armor_large_h"] >> params.armor_large_h;
     fs["armor_large_w"] >> params.armor_large_w;
 
+    //相机内参
+    readCameraParametersFromYaml(params.calib_yaml_path);
+    //相机外参
+    readCameraExtrinsics(params.camera_extrinsics_path);
+
     fs.release();
     std::cout << "参数已从 " << filepath << " 加载" << std::endl;
+    std::cout << params.trans_pnp2head << std::endl;
     return 0;
 }
 
@@ -136,7 +142,7 @@ void writeMatricesToFile(const std::string& filename) {
 }
 
 //读取相机外参
-void readMatricesFromFile(const std::string& filename) {
+void readCameraExtrinsics(const std::string& filename) {
     cv::FileStorage fs(filename, cv::FileStorage::READ);
 
     cv::Mat cvRotate, cvTrans;
