@@ -72,7 +72,7 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
     cv::Mat intrinsic_matrix;
     cv::Mat distortion_coeffs;
 
-    //TODO
+    //CHANGELOG
     //参数填充：intrinsic_matrix， distortion_coeffs， rotate_pnp2head， trans_pnp2head
     intrinsic_matrix = params.intrinsic_matrix;
     distortion_coeffs = params.distortion_coeffs;

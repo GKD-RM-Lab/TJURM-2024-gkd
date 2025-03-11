@@ -59,6 +59,11 @@ void Pipeline::tracker_baseline_thread(
         if (track_flag) track_flag = updater(frame);
         tp2 = getTime();
 
+        /*debug*/
+        if(frame->target_list.size()>0){
+            std::cout << frame->target_list[0].armor_size << std::endl;
+        }
+
         if (Data::pipeline_delay_flag) rm::message("tracker time", getDoubleOfS(tp1, tp2) * 1000);
         if (track_flag) delay_list.push(getDoubleOfS(tp0, tp2));
 

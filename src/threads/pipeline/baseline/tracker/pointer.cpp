@@ -165,78 +165,103 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
 
         armor.color = rm::getArmorColorFromHSV(roi, best_pair);
         
-        if (!flag) {
-            if (Data::point_skip_flag) rm::message("No lightbar pair found", rm::MSG_NOTE);
-            if (Data::image_flag && Data::ui_flag) {
-                rm::displaySingleArmorClass(*(frame->image), armor);
-                rm::displaySingleArmorRect(*(frame->image), armor);
+        //当yolo识别出完整四点时，不使用传统算法识别四点
+        if(yolo_rect.four_points.size() == 4)
+        {
+            //移植四点数据
+            armor.four_points = yolo_rect.four_points;
+            //按照类别分类大小装甲板
+            //class映射是直接截取前半
+            const std::vector<std::string> class_names = {
+                "B1", "B2", "B3", "B4", "B5", "BO", "BS", "R1", "R2", "R3", "R4", "R5", "RO", "RS"
+            };
+            if(class_names[yolo_rect.class_id] == "B1" || class_names[yolo_rect.class_id] == "R1" ){
+                armor.size = ARMOR_SIZE_BIG_ARMOR;
+            }else{
+                armor.size = ARMOR_SIZE_SMALL_ARMOR;
             }
-            continue;
-        }
-
-        bool color_skip_flag = false;
-        
-        #ifdef TJURM_SENTRY
-        color_skip_flag = color_skip_flag || !rm::isArmorColorEnemy(roi, best_pair, Data::enemy_color, enemy_split);
-        color_skip_flag = color_skip_flag || (armor.color != Data::enemy_color);
-        #endif
-        
-        #if defined(TJURM_INFANTRY) || defined(TJURM_BALANCE) || defined(TJURM_HERO) || defined(TJURM_DRONSE)
-        color_skip_flag = color_skip_flag || (armor.color == Data::self_color);
-        color_skip_flag = color_skip_flag || (armor.color == rm::ARMOR_COLOR_NONE);
-        #endif
-        
-
-        if (Data::auto_enemy && color_skip_flag) {
-            if (Data::point_skip_flag) rm::message("Color is on our part", rm::MSG_NOTE);
-            if (Data::image_flag && Data::ui_flag) {
-                rm::displaySingleArmorClass(*(frame->image), armor);
-                rm::displaySingleArmorRect(*(frame->image), armor);
+            
+            printf("yolo used\n");
+        }else{
+            if (!flag) {
+                if (Data::point_skip_flag) rm::message("No lightbar pair found", rm::MSG_NOTE);
+                if (Data::image_flag && Data::ui_flag) {
+                    rm::displaySingleArmorClass(*(frame->image), armor);
+                    rm::displaySingleArmorRect(*(frame->image), armor);
+                }
+                continue;
             }
-            continue;
-        }
-        
-        rm::setArmorFourPoints(
-            armor, 
-            findPointPairBarycenter(best_pair.first, gray, point_line_dist, point_radius_ratio),
-            findPointPairBarycenter(best_pair.second, gray, point_line_dist, point_radius_ratio)
-        );
 
-        if (rm::isLightBarAreaPercentValid(armor, armor_min_area_percent)) {
-            if (Data::point_skip_flag) rm::message("Area percent is invalid", rm::MSG_NOTE);
-            if (Data::image_flag && Data::ui_flag) {
-                rm::displaySingleArmorClass(*(frame->image), armor);
-                rm::displaySingleArmorRect(*(frame->image), armor);
+            bool color_skip_flag = false;
+            
+            #ifdef TJURM_SENTRY
+            color_skip_flag = color_skip_flag || !rm::isArmorColorEnemy(roi, best_pair, Data::enemy_color, enemy_split);
+            color_skip_flag = color_skip_flag || (armor.color != Data::enemy_color);
+            #endif
+            
+            #if defined(TJURM_INFANTRY) || defined(TJURM_BALANCE) || defined(TJURM_HERO) || defined(TJURM_DRONSE)
+            color_skip_flag = color_skip_flag || (armor.color == Data::self_color);
+            color_skip_flag = color_skip_flag || (armor.color == rm::ARMOR_COLOR_NONE);
+            #endif
+            
+
+            if (Data::auto_enemy && color_skip_flag) {
+                if (Data::point_skip_flag) rm::message("Color is on our part", rm::MSG_NOTE);
+                if (Data::image_flag && Data::ui_flag) {
+                    rm::displaySingleArmorClass(*(frame->image), armor);
+                    rm::displaySingleArmorRect(*(frame->image), armor);
+                }
+                continue;
             }
-            continue;
-        }
+            
+            rm::setArmorFourPoints(
+                armor, 
+                findPointPairBarycenter(best_pair.first, gray, point_line_dist, point_radius_ratio),
+                findPointPairBarycenter(best_pair.second, gray, point_line_dist, point_radius_ratio)
+            );
 
-        if(armor.four_points.size() != 4) {
-            if (Data::point_skip_flag) rm::message("No four points found", rm::MSG_NOTE);
-            if (Data::image_flag && Data::ui_flag) {
-                rm::displaySingleArmorClass(*(frame->image), armor);
-                rm::displaySingleArmorRect(*(frame->image), armor);
+            if (rm::isLightBarAreaPercentValid(armor, armor_min_area_percent)) {
+                if (Data::point_skip_flag) rm::message("Area percent is invalid", rm::MSG_NOTE);
+                if (Data::image_flag && Data::ui_flag) {
+                    rm::displaySingleArmorClass(*(frame->image), armor);
+                    rm::displaySingleArmorRect(*(frame->image), armor);
+                }
+                continue;
             }
-            continue;
+
+            if(armor.four_points.size() != 4) {
+                if (Data::point_skip_flag) rm::message("No four points found", rm::MSG_NOTE);
+                if (Data::image_flag && Data::ui_flag) {
+                    rm::displaySingleArmorClass(*(frame->image), armor);
+                    rm::displaySingleArmorRect(*(frame->image), armor);
+                }
+                continue;
+            }
         }
-
-        //debug 四点查询
-        // std::cout << "4pts size:" << armor.four_points.size() << std::endl;
-        // if(armor.four_points.size() >0){
-        //     std::cout << armor.four_points[0] << std::endl;
-        // }
-        // if(frame->yolo_list.size()>0)
-        // {
-        //     std::cout << "yolo 4pts size:" << frame->yolo_list[0].four_points.size() << std::endl;
-        //     if(frame->yolo_list[0].four_points.size() >0){
-        //         std::cout << frame->yolo_list[0].four_points[0] << std::endl;
-        //     }
-        // }
-        // std::cout << "----------------" << std::endl;
-
-        //TODO
-        //当YOLO识别出四点的时候，使用YOLO的四点
-        //当YOLO没有识别出来四点（<=3）的时候，用传统算法的四点
+        // debug 四点查询
+        // TODO 查看elevation是在哪边被赋值的，yolo里没有给elevation赋值
+        //（以及elevation是什么）
+        // elevation似乎是在yaw pnp里算的，这里不用管
+        if(false)
+        {
+            std::cout << "4pts size:" << armor.four_points.size() << std::endl;
+            if(armor.four_points.size() >0){
+                std::cout << armor.four_points[0] << std::endl;
+            }
+            if(frame->yolo_list.size()>0)
+            {
+                std::cout << "yolo 4pts size:" << frame->yolo_list[0].four_points.size() << std::endl;
+                if(frame->yolo_list[0].four_points.size() >0){
+                    std::cout << frame->yolo_list[0].four_points[0] << std::endl;
+                }
+            }
+            std::cout << "center" << armor.center << std::endl;
+            std::cout << "id" << armor.id << std::endl;
+            std::cout << "size" << armor.size << std::endl;
+            std::cout << "elevation" << armor.elevation << std::endl;
+            std::cout << "color" << armor.color << std::endl;
+            std::cout << "----------------" << std::endl;
+        }
 
         #if defined(TJURM_SENTRY) || defined(TJURM_DRONSE)
         if (armor.id == rm::ARMOR_ID_TOWER) setArmorSizeByPoints(armor, armor_tower_size_ratio);
