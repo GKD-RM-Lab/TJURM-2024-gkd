@@ -33,7 +33,7 @@ void Pipeline::detector_baseline_thread(
     size_t yolo_struct_size = sizeof(float) * static_cast<size_t>(locate_num + 1 + color_num + class_num);
     std::mutex mutex;
     TimePoint tp0, tp1, tp2;
-    cv::Mat inputImage;
+    cv::Mat inputImage, label_image;
     /*推理模型*/
     yolo_kpt model;
     std::vector<yolo_kpt::Object> result;
@@ -129,13 +129,14 @@ void Pipeline::detector_baseline_thread(
         model.pnp_kpt_preprocess(result);
 
         //输出识别信息&绘图(可视化)
-        inputImage = model.visual_label(inputImage, result);
+        inputImage.copyTo(label_image);
+        label_image = model.visual_label(label_image, result);
 
         //没探测到装甲板则等待
         // if(result.size() == 0) continue;
 
         //imshow
-        cv::imshow("cam", inputImage);
+        cv::imshow("cam", label_image);
         if(cv::waitKey(1)=='q') break;
 
 

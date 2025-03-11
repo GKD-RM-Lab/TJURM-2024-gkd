@@ -96,7 +96,11 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
         binary_ratio = (*param)["Points"]["Threshold"]["RatioBlue"];
     }
 
+    //debug
+    std::vector<rm::Armor> armor_list_local;
+
     for (auto& yolo_rect : frame->yolo_list) {
+        std::cout << "run here" << std::endl;
         rm::Armor armor;
         armor.id = (rm::ArmorID)(armor_class_map[yolo_rect.class_id]);
         armor.color = (rm::ArmorColor)(armor_color_map[yolo_rect.color_id]);
@@ -127,6 +131,7 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
             cv::waitKey(1);
         }
 
+        //计算了装甲板roi的直方图？？
         if (Data::image_flag && Data::histogram_flag) {
             cv::Mat showHist;
             rm::getThresholdFromHist(roi, showHist, 8, binary_ratio);
@@ -134,10 +139,10 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
             cv::waitKey(1);
         }
 
+        
         std::vector<std::vector<cv::Point>> contours;
         cv::findContours(binary, contours, cv::RETR_LIST, cv::CHAIN_APPROX_NONE);
-
-
+        
         std::vector<rm::Lightbar> lightbar_list;
         rm::getLightbarsFromContours(
             contours, 
@@ -163,7 +168,7 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
             armor_max_offset);
 
         armor.color = rm::getArmorColorFromHSV(roi, best_pair);
-
+        
         if (!flag) {
             if (Data::point_skip_flag) rm::message("No lightbar pair found", rm::MSG_NOTE);
             if (Data::image_flag && Data::ui_flag) {
@@ -219,6 +224,24 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
             continue;
         }
 
+        //debug 四点查询
+        std::cout << "4pts size:" << armor.four_points.size() << std::endl;
+        if(armor.four_points.size() >0){
+            std::cout << armor.four_points[0] << std::endl;
+        }
+        if(frame->yolo_list.size()>0)
+        {
+            std::cout << "yolo 4pts size:" << frame->yolo_list[0].four_points.size() << std::endl;
+            if(frame->yolo_list[0].four_points.size() >0){
+                std::cout << frame->yolo_list[0].four_points[0] << std::endl;
+            }
+        }
+        std::cout << "----------------" << std::endl;
+
+        //TODO
+        //当YOLO识别出四点的时候，使用YOLO的四点
+        //当YOLO没有识别出来四点（<=3）的时候，用传统算法的四点
+
         #if defined(TJURM_SENTRY) || defined(TJURM_DRONSE)
         if (armor.id == rm::ARMOR_ID_TOWER) setArmorSizeByPoints(armor, armor_tower_size_ratio);
         else setArmorSizeByPoints(armor, armor_size_ratio);
@@ -228,7 +251,11 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
         setArmorSizeByPoints(armor, armor_size_ratio);
         #endif
 
-        frame->armor_list.push_back(armor);
+        // continue;
+        
+        // armor_list_local.push_back(armor);
+        frame->armor_list.push_back(armor);     //段错误点
+        
 
         if (Data::image_flag && Data::ui_flag) {
             rm::displaySingleArmorClass(*(frame->image), armor);
@@ -247,7 +274,12 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
         } else if (Data::image_flag && Data::ui_flag) {
             rm::displaySingleArmorLine(*(frame->image), armor);
         }
+        
     }
+
+    // //debug
+    // frame->armor_list = armor_list_local; //新的段错误点
+    // // frame->armor_list.assign(armor_list_local.begin(), armor_list_local.end());
 
 
 
