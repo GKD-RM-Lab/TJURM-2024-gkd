@@ -28,7 +28,7 @@
 
 void gpu_accel_check();
 
-int main(int argc, char** argv) {
+int frontend_task(int argc, char** argv) {
 
     //载入参数
     para_load("../config/config.yaml");

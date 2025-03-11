@@ -59,10 +59,10 @@ void Pipeline::autoaim_baseline() {
     //     &Pipeline::preprocessor_baseline_thread, this,
     //     std::ref(preprocessor_mutex_), std::ref(preprocessor_over_), std::ref(preprocessor_register_));
     
-    // std::thread detector_baseline_thread(
-    //     &Pipeline::detector_baseline_thread, this,
-    //     std::ref(preprocessor_mutex_), std::ref(preprocessor_over_), std::ref(preprocessor_register_),
-    //     std::ref(detector_mutex_), std::ref(detector_over_), std::ref(detector_register_));
+    std::thread detector_baseline_thread(
+        &Pipeline::detector_baseline_thread, this,
+        std::ref(preprocessor_mutex_), std::ref(preprocessor_over_), std::ref(preprocessor_register_),
+        std::ref(detector_mutex_), std::ref(detector_over_), std::ref(detector_register_));
 
     std::thread tracker_baseline_thread(
         &Pipeline::tracker_baseline_thread, this,
@@ -73,7 +73,7 @@ void Pipeline::autoaim_baseline() {
         std::ref(record_mutex_), std::ref(record_in_), std::ref(record_register_));
 
     // preprocessor_baseline_thread.detach();
-    // detector_baseline_thread.detach();
+    detector_baseline_thread.detach();
     tracker_baseline_thread.detach();
     recording_thread.detach();
 

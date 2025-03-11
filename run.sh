@@ -100,8 +100,40 @@ make -j "$max_threads"
 echo -e "${yellow}\n<--- Total Lines --->${reset}"
 echo -e "${blue}        $total${reset}"
 
+# ========== 新增：模型文件安装 ==========
+VISION_FORWARD_DIR="../libs/RMvision_forward"
+MODEL_DIR="/etc/openrm/models"
+if [ ! -d "${MODEL_DIR}" ]; then
+    sudo mkdir -p ${MODEL_DIR}
+    sudo chmod -R 777 /etc/openrm
+fi
+sudo cp -r ${VISION_FORWARD_DIR}/models/* ${MODEL_DIR}/
 
-echo -e "${yellow}\n<--- Run Code --->${reset}"
+# ========== 新增：驱动库安装 ==========
+DRIVER_DIR="/etc/openrm/cam_driver"
+if [ ! -d "${DRIVER_DIR}" ]; then
+    sudo mkdir -p ${DRIVER_DIR}
+    sudo chmod -R 777 /etc/openrm
+fi
+sudo cp -r ${VISION_FORWARD_DIR}/lib/* ${DRIVER_DIR}/
+
+# ========== 新增：驱动库软链接 ==========
+LIB_PATH="${DRIVER_DIR}/64"
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${LIB_PATH}
+# echo "LD_LIBRARY_PATH updated to: $LD_LIBRARY_PATH"
+
+# ========== 新增：前端配置文件安装 ==========
+FORWARD_CONFIG_DIR="/etc/openrm/forward_config"
+if [ ! -d "${FORWARD_CONFIG_DIR}" ]; then
+    sudo mkdir -p ${FORWARD_CONFIG_DIR}
+    sudo chmod -R 777 /etc/openrm
+fi
+#覆盖配置文件
+# sudo rm -r ${FORWARD_CONFIG_DIR}/*
+sudo cp -r ${VISION_FORWARD_DIR}/config/* ${FORWARD_CONFIG_DIR}/
+
+
+
 sudo rm /usr/local/bin/TJURM-2024
 sudo cp TJURM-2024 /usr/local/bin/
 sudo pkill TJURM-2024

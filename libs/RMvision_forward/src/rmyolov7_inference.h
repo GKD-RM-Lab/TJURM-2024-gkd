@@ -15,6 +15,7 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/dnn/dnn.hpp>
+#undef Status
 #include <openvino/openvino.hpp>
 // #include <inference_engine.hpp>
 // using namespace InferenceEngine;

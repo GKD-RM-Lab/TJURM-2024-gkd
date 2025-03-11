@@ -11,6 +11,13 @@
 #include <chrono>
 #include <unistd.h>
 
+//海康相机驱动
+#include "HIKdriver.hpp"
+#include <opencv2/opencv.hpp>
+#include <opencv2/core.hpp>
+
+//前端参数loader
+#include "parameter_loader.hpp"
 
 std::mutex hang_up_mutex;
 std::condition_variable hang_up_cv;
@@ -33,7 +40,27 @@ int main(int argc, char** argv) {
         }
     }
     
-    while(true) if(init_camera()) break;
+    para_load("/etc/openrm/forward_config/config.yaml");
+
+    /*相机读取线程*/
+    std::thread cameraThread(HIKcamtask);
+    cv::Mat inputImage;
+
+
+    //debug
+    // while(1)
+    // {
+    //     //读取视频帧
+    //     HIKframemtx.lock();
+    //     HIKimage.copyTo(inputImage);
+    //     HIKframemtx.unlock();
+    //     if(inputImage.empty()) continue;
+
+    //     cv::imshow("cam", inputImage);
+    //     if(cv::waitKey(1)=='q') break;
+    // }
+
+    // while(true) if(init_camera()) break;
 
     rm::message_init("autoaim");
     init_debug();

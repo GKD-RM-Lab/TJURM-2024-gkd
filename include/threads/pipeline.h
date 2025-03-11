@@ -57,9 +57,9 @@ public:
     // void preprocessor_baseline_thread(
     //     std::mutex& mutex_out, bool& flag_out, std::shared_ptr<rm::Frame>& frame_out);
 
-    // void detector_baseline_thread(
-    //     std::mutex& mutex_in, bool& flag_in, std::shared_ptr<rm::Frame>& frame_in,
-    //     std::mutex& mutex_out, bool& flag_out, std::shared_ptr<rm::Frame>& frame_out);
+    void detector_baseline_thread(
+        std::mutex& mutex_in, bool& flag_in, std::shared_ptr<rm::Frame>& frame_in,
+        std::mutex& mutex_out, bool& flag_out, std::shared_ptr<rm::Frame>& frame_out);
 
     void tracker_baseline_thread(
         std::mutex& mutex_in, bool& flag_in, std::shared_ptr<rm::Frame>& frame_in);
