@@ -60,8 +60,9 @@ void Pipeline::tracker_baseline_thread(
         tp2 = getTime();
 
         /*debug pnp data*/
-        if(frame->target_list.size()>0){
-            std::cout << frame->target_list[0].pose_world << std::endl;
+        if(frame->target_list.size()>0 && false){
+            std::cout << "pose" << frame->target_list[0].pose_world << std::endl;
+            std::cout << "armor_yaw_world" << frame->target_list[0].armor_yaw_world << std::endl;        
         }
 
         if (Data::pipeline_delay_flag) rm::message("tracker time", getDoubleOfS(tp1, tp2) * 1000);

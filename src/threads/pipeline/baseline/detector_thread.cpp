@@ -136,8 +136,8 @@ void Pipeline::detector_baseline_thread(
         // if(result.size() == 0) continue;
 
         //imshow
-        // cv::imshow("cam", label_image);
-        // if(cv::waitKey(1)=='q') break;
+        cv::imshow("cam", label_image);
+        if(cv::waitKey(1)=='q') break;
 
 
         /*把识别数据同步到TJU框架的frame中*/

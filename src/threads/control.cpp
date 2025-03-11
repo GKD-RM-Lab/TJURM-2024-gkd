@@ -41,8 +41,9 @@ void Control::autoaim() {
     std::thread send_thread(&Control::send_thread, this);
     send_thread.detach();
 
-    if (Data::serial_flag) {
-        std::thread receive_thread(&Control::receive_thread, this);
-        receive_thread.detach();
-    }
+    //debug 暂时关闭
+    // if (Data::serial_flag) {
+    //     std::thread receive_thread(&Control::receive_thread, this);
+    //     receive_thread.detach();
+    // }
 }
