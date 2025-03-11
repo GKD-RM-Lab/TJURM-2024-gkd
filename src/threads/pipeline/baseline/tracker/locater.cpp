@@ -118,56 +118,60 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
 
         if (Data::plus_pnp) {
             /*debug 交换点序*/
-            std::vector<cv::Point2f> new_four_points;
-            new_four_points.push_back(armor.four_points[2]);
-            new_four_points.push_back(armor.four_points[1]);
-            new_four_points.push_back(armor.four_points[3]);
-            new_four_points.push_back(armor.four_points[0]);
+            // std::vector<cv::Point2f> new_four_points;
+            // new_four_points.push_back(armor.four_points[2]);
+            // new_four_points.push_back(armor.four_points[1]);
+            // new_four_points.push_back(armor.four_points[3]);
+            // new_four_points.push_back(armor.four_points[0]);
 
             target.armor_yaw_world = rm::solveYawPnP(
-                frame->yaw, intrinsic_matrix, distortion_coeffs, trans_pnp2head, rotate_pnp2head, pose_world, *Armor3D, new_four_points, 
+                frame->yaw, intrinsic_matrix, distortion_coeffs, trans_pnp2head, rotate_pnp2head, pose_world, *Armor3D, armor.four_points, 
                 rotate_head2world, trans_head2world, armor.id, plus_pnp_cost_image);
             target.pose_world = pose_world;
             /*debug*/
-            std::cout << "pnp_in" << std::endl;
-            std::cout << "frame->yaw" << frame->yaw << std::endl;
-            std::cout << "intrinsic_matrix" << intrinsic_matrix << std::endl;
-            std::cout << "distortion_coeffs" << distortion_coeffs << std::endl;
-            std::cout << "trans_pnp2head" << trans_pnp2head << std::endl;
-            std::cout << "*Armor3D" << *Armor3D << std::endl;
-            std::cout << "armor.four_points" << armor.four_points << std::endl;
-            std::cout << "rotate_head2world" << rotate_head2world << std::endl;
-            std::cout << "trans_head2world" << trans_head2world << std::endl;
-            std::cout << "armor.id" << armor.id << std::endl;
-            std::cout << "plus_pnp_cost_image" << plus_pnp_cost_image << std::endl;
-            std::cout << "pnp_out" << std::endl;
-            std::cout << "pose_world" << pose_world << std::endl;
-            std::cout << "----------------------------------------------" << std::endl;
+            if(false)
+            {
+                std::cout << "pnp_in" << std::endl;
+                std::cout << "frame->yaw" << frame->yaw << std::endl;
+                std::cout << "intrinsic_matrix" << intrinsic_matrix << std::endl;
+                std::cout << "distortion_coeffs" << distortion_coeffs << std::endl;
+                std::cout << "trans_pnp2head" << trans_pnp2head << std::endl;
+                std::cout << "*Armor3D" << *Armor3D << std::endl;
+                std::cout << "armor.four_points" << armor.four_points << std::endl;
+                std::cout << "rotate_head2world" << rotate_head2world << std::endl;
+                std::cout << "trans_head2world" << trans_head2world << std::endl;
+                std::cout << "armor.id" << armor.id << std::endl;
+                std::cout << "plus_pnp_cost_image" << plus_pnp_cost_image << std::endl;
+                std::cout << "pnp_out" << std::endl;
+                std::cout << "pose_world" << pose_world << std::endl;
+                std::cout << "----------------------------------------------" << std::endl;
+            }
         } else {
             try {
 
             /*debug 交换点序*/
-            std::vector<cv::Point2f> new_four_points;
-            new_four_points.push_back(armor.four_points[2]);
-            new_four_points.push_back(armor.four_points[1]);
-            new_four_points.push_back(armor.four_points[3]);
-            new_four_points.push_back(armor.four_points[0]);
-
-
-                cv::solvePnP(*Armor3D, new_four_points,
+            // std::vector<cv::Point2f> new_four_points;
+            // new_four_points.push_back(armor.four_points[2]);
+            // new_four_points.push_back(armor.four_points[1]);
+            // new_four_points.push_back(armor.four_points[3]);
+            // new_four_points.push_back(armor.four_points[0]);
+                cv::solvePnP(*Armor3D, armor.four_points,
                             intrinsic_matrix,
                             distortion_coeffs,
                             rvec, tvec, false, cv::SOLVEPNP_IPPE);
             /*debug*/
-            std::cout << "pnp_in" << std::endl;
-            std::cout << "*Armor3D" << *Armor3D << std::endl;
-            std::cout << "armor.four_point" << armor.four_points << std::endl;
-            std::cout << "intrinsic_matrix" << intrinsic_matrix << std::endl;
-            std::cout << "distortion_coeffs" << distortion_coeffs << std::endl;
-            std::cout << "pnp_out" << std::endl;
-            std::cout << "rvec" << rvec << std::endl;
-            std::cout << "tvec" << tvec << std::endl;
-            std::cout << "----------------------------------------------" << std::endl;
+            if(false)
+            {
+                std::cout << "pnp_in" << std::endl;
+                std::cout << "*Armor3D" << *Armor3D << std::endl;
+                std::cout << "armor.four_point" << armor.four_points << std::endl;
+                std::cout << "intrinsic_matrix" << intrinsic_matrix << std::endl;
+                std::cout << "distortion_coeffs" << distortion_coeffs << std::endl;
+                std::cout << "pnp_out" << std::endl;
+                std::cout << "rvec" << rvec << std::endl;
+                std::cout << "tvec" << tvec << std::endl;
+                std::cout << "----------------------------------------------" << std::endl;
+            }
 
             } catch (cv::Exception e) {
                 rm::message("solvePnP error", rm::MSG_ERROR);

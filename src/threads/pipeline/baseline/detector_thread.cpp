@@ -148,7 +148,15 @@ void Pipeline::detector_baseline_thread(
         {
             YoloRect yolo_result_single;    //单个装甲板
             //灯条关键点
-            yolo_result_single.four_points = result_single.kpt;     
+            if(result_single.kpt.size()<4){
+                yolo_result_single.four_points = result_single.kpt; 
+            }else{
+                //纠正点顺序
+                yolo_result_single.four_points.push_back(result_single.kpt[2]);
+                yolo_result_single.four_points.push_back(result_single.kpt[1]);
+                yolo_result_single.four_points.push_back(result_single.kpt[3]);
+                yolo_result_single.four_points.push_back(result_single.kpt[0]);
+            }
             //yolo判定框
             yolo_result_single.box = cv::Rect(
                 cvRound(result_single.rect.x), 
