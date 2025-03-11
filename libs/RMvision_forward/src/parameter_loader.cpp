@@ -46,7 +46,7 @@ int yaml_write(const std::string& filepath, const parameter_loader_t& params) {
     fs << "img_count" << params.img_count;
     fs << "sample_period" << params.sample_period;
     fs << "calib_yaml_path" << params.calib_yaml_path;
-    fs << "camera_intrinsics_path" << params.camera_intrinsics_path;
+    fs << "camera_extrinsics_path" << params.camera_extrinsics_path;
 
     /*相机参数*/
     fs << "cam_gain" << params.cam_gain;
@@ -91,7 +91,7 @@ int yaml_load(const std::string& filepath, parameter_loader_t& params) {
     fs["img_count"] >> params.img_count;
     fs["sample_period"] >> params.sample_period;
     fs["calib_yaml_path"] >> params.calib_yaml_path;
-    fs["camera_intrinsics_path"] >> params.camera_intrinsics_path;
+    fs["camera_extrinsics_path"] >> params.camera_extrinsics_path;
 
     /*相机参数*/
     fs["cam_gain"] >> params.cam_gain;

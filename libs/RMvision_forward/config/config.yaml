@@ -15,7 +15,7 @@ squareSize: 15
 img_count: 60
 sample_period: 20
 calib_yaml_path: "/etc/openrm/forward_config/camera_intrinsics.yaml"
-camera_intrinsics_path: "/etc/openrm/forward_config/camera_extrinsics.yaml"
+camera_extrinsics_path: "/etc/openrm/forward_config/camera_extrinsics.yaml"
 cam_gain: 15.2
 cam_exptime: 6000
 framerate: 120

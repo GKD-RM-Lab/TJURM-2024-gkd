@@ -30,7 +30,7 @@ typedef struct
     int img_count;          //ok
     int sample_period;      //ok
     std::string calib_yaml_path;    //ok
-    std::string camera_intrinsics_path;
+    std::string camera_extrinsics_path;
     /*相机*/
     float cam_gain;         //ok
     int cam_exptime;        //ok
