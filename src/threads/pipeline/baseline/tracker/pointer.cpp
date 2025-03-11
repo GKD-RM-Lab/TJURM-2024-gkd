@@ -181,7 +181,7 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
                 armor.size = ARMOR_SIZE_SMALL_ARMOR;
             }
             
-            printf("yolo used\n");
+            // printf("yolo used\n");
         }else{
             if (!flag) {
                 if (Data::point_skip_flag) rm::message("No lightbar pair found", rm::MSG_NOTE);
@@ -263,14 +263,15 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
             std::cout << "----------------" << std::endl;
         }
 
-        #if defined(TJURM_SENTRY) || defined(TJURM_DRONSE)
-        if (armor.id == rm::ARMOR_ID_TOWER) setArmorSizeByPoints(armor, armor_tower_size_ratio);
-        else setArmorSizeByPoints(armor, armor_size_ratio);
-        #endif
+        // 联盟赛可以直接根据ID判断装甲板大小
+        // #if defined(TJURM_SENTRY) || defined(TJURM_DRONSE)
+        // if (armor.id == rm::ARMOR_ID_TOWER) setArmorSizeByPoints(armor, armor_tower_size_ratio);
+        // else setArmorSizeByPoints(armor, armor_size_ratio);
+        // #endif
 
-        #if defined(TJURM_INFANTRY) || defined(TJURM_BALANCE) || defined(TJURM_HERO)
-        setArmorSizeByPoints(armor, armor_size_ratio);
-        #endif
+        // #if defined(TJURM_INFANTRY) || defined(TJURM_BALANCE) || defined(TJURM_HERO)
+        // setArmorSizeByPoints(armor, armor_size_ratio);
+        // #endif
 
         frame->armor_list.push_back(armor);
         
