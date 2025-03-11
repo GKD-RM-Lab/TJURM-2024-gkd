@@ -72,10 +72,7 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
     cv::Mat intrinsic_matrix;
     cv::Mat distortion_coeffs;
 
-    //相机外参
-    // Eigen::Matrix3d rotate_pnp2hea;
-    // Eigen::Matrix4d trans_pnp2head;
-
+    while(1);
     //TODO
     //参数填充：intrinsic_matrix， distortion_coeffs， rotate_pnp2head， trans_pnp2head
 

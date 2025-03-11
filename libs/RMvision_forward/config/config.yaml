@@ -1,22 +1,27 @@
 %YAML:1.0
 ---
-model_path_xml: ""
-model_path_bin: ""
-conf_threshold: 0.
-rect_cut: 1
-boardSize_h: 0
-boardSize_w: 0
-squareSize: 0.
-img_count: 0
-sample_period: 0
-calib_yaml_path: ""
-camera_intrinsics_path: ""
-cam_gain: 0.
-cam_exptime: 0
-framerate: 0.
-imshow_en: 0
-debug_info: 0
-armor_small_h: 0.
-armor_small_w: 0.
-armor_large_h: 0.
-armor_large_w: 0.
+# model_path_xml: "/etc/openrm/models/RMyolo-v7-new/RMyolov7-new.xml"
+# model_path_bin: "/etc/openrm/models/RMyolo-v7-new/RMyolov7-new.bin"
+
+model_path_xml: "/etc/openrm/models/RMyolov7-best-fp32/rmyolo-v7-best.xml"
+model_path_bin: "/etc/openrm/models/RMyolov7-best-fp32/rmyolo-v7-best.bin"
+
+
+conf_threshold: 0.35
+rect_cut: 0
+boardSize_h: 7
+boardSize_w: 9
+squareSize: 15
+img_count: 60
+sample_period: 20
+calib_yaml_path: "/etc/openrm/forward_config/camera_intrinsics.yaml"
+camera_intrinsics_path: "/etc/openrm/forward_config/camera_extrinsics.yaml"
+cam_gain: 15.2
+cam_exptime: 6000
+framerate: 120
+imshow_en: 1
+debug_info: 1
+armor_small_h: 50
+armor_small_w: 135
+armor_large_h: 50
+armor_large_w: 200
