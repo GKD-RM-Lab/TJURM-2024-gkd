@@ -247,8 +247,9 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
         } else if (Data::image_flag && Data::ui_flag) {
             rm::displaySingleArmorLine(*(frame->image), armor);
         }
-
     }
+
+
 
     if (frame->armor_list.size() == 0) {
         if (Data::point_skip_flag) rm::message("No armor found", rm::MSG_NOTE);

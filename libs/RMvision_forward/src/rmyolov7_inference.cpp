@@ -257,7 +257,7 @@ std::vector<yolo_kpt::Object> yolo_kpt::work(cv::Mat src_img) {
         }
     }
     timer.end();
-    std::cout << "preprocess time:" << timer.read() << std::endl;
+    // std::cout << "preprocess time:" << timer.read() << std::endl;
 
     /*---------------------推理----------------------*/
     timer.begin();
@@ -272,7 +272,7 @@ std::vector<yolo_kpt::Object> yolo_kpt::work(cv::Mat src_img) {
     auto output_tensor_p32 = infer_request.get_output_tensor(2);
     const float *result_p32 = output_tensor_p32.data<const float>();
     timer.end();
-    std::cout << "inference time:" << timer.read() << std::endl;
+    // std::cout << "inference time:" << timer.read() << std::endl;
 
     /*------------------------后处理----------------------*/
     timer.begin();
@@ -324,7 +324,7 @@ std::vector<yolo_kpt::Object> yolo_kpt::work(cv::Mat src_img) {
 #endif
     }
     timer.end();
-    std::cout << "postprocess time:" << timer.read() << std::endl;
+    // std::cout << "postprocess time:" << timer.read() << std::endl;
 #ifdef VIDEO
     // cv::imshow("Inference frame", src_img);
     // cv::waitKey(1);

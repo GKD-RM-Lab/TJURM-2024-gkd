@@ -33,6 +33,11 @@ void Pipeline::detector_baseline_thread(
     size_t yolo_struct_size = sizeof(float) * static_cast<size_t>(locate_num + 1 + color_num + class_num);
     std::mutex mutex;
     TimePoint tp0, tp1, tp2;
+    cv::Mat inputImage;
+    /*推理模型*/
+    yolo_kpt model;
+    std::vector<yolo_kpt::Object> result;
+
     while (true) {
         // if (!Data::armor_mode) {
         //     std::unique_lock<std::mutex> lock(mutex);
@@ -112,39 +117,74 @@ void Pipeline::detector_baseline_thread(
         // tp2 = getTime();
         // if (Data::pipeline_delay_flag) rm::message("detect time", getDoubleOfS(tp1, tp2) * 1000);
 
-        std::cout << "run here" << std::endl;
-        cv::Mat inputImage;
+        //读取视频帧
+        HIKframemtx.lock();
+        HIKimage.copyTo(inputImage);
+        HIKframemtx.unlock();
+        if(inputImage.empty()) continue;
 
-        /*推理模型*/
-        yolo_kpt model;
-        std::vector<yolo_kpt::Object> result;
+        //推理
+        result = model.work(inputImage);
+        //角点预处理
+        model.pnp_kpt_preprocess(result);
 
-        //camera debug
-        while(1)
+        //输出识别信息&绘图(可视化)
+        inputImage = model.visual_label(inputImage, result);
+
+        //没探测到装甲板则等待
+        // if(result.size() == 0) continue;
+
+        //imshow
+        cv::imshow("cam", inputImage);
+        if(cv::waitKey(1)=='q') break;
+
+
+        /*把识别数据同步到TJU框架的frame中*/
+        rm::Frame frame;        
+        std::vector<YoloRect> yolo_retult;  //从result中提取出的yolo结果
+        
+        for(auto&result_single : result)
         {
-            //读取视频帧
-            HIKframemtx.lock();
-            HIKimage.copyTo(inputImage);
-            HIKframemtx.unlock();
-            if(inputImage.empty()) continue;
-
-            //推理
-            result = model.work(inputImage);
-            //角点预处理
-            model.pnp_kpt_preprocess(result);
-
-            //输出识别信息&绘图
-            inputImage = model.visual_label(inputImage, result);
-
-            cv::imshow("cam", inputImage);
-            if(cv::waitKey(1)=='q') break;
+            YoloRect yolo_result_single;    //单个装甲板
+            //灯条关键点
+            yolo_result_single.four_points = result_single.kpt;     
+            //yolo判定框
+            yolo_result_single.box = cv::Rect(
+                cvRound(result_single.rect.x), 
+                cvRound(result_single.rect.y),
+                cvRound(result_single.rect.width), 
+                cvRound(result_single.rect.height)
+            );
+            //至信度
+            yolo_result_single.confidence = result_single.prob;
+            //ID索引转换
+            //"B1", "B2", "B3", "B4", "B5", "BO", "BS", "R1", "R2", "R3", "R4", "R5", "RO", "RS"
+            //颜色（先假设红0蓝2）,类型（按照兵种编号） TODO 确认
+            if(result_single.label < 7){
+                yolo_result_single.color_id = rm::ARMOR_COLOR_BLUE;
+                yolo_result_single.class_id = result_single.label;
+            }else if(result_single.label >= 7){
+                yolo_result_single.color_id = rm::ARMOR_COLOR_RED;
+                yolo_result_single.class_id = result_single.label - 7;
+            }
+            
+            frame.yolo_list.push_back(yolo_result_single);
+            
         }
-
-        while(1);   //debug halt
-
+        
+        
+        /*同步图片信息到frame中*/
+        frame.height = inputImage.rows;    //高
+        frame.width = inputImage.cols;     //宽
+        frame.camera_id = 0;               //相机id
+        if (!frame.image) {
+            frame.image = std::make_shared<cv::Mat>();
+        }
+        inputImage.copyTo(*frame.image); //图像
+        frame.time_point = std::chrono::high_resolution_clock::now();  //当前时间
+        
         std::unique_lock<std::mutex> lock_out(mutex_out);
-        // frame_out = frame;
-        frame_out = frame_in;
+        frame_out = std::make_shared<rm::Frame>(frame);
         flag_out = true;
         lock_out.unlock();
         tracker_in_cv_.notify_one();
