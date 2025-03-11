@@ -55,13 +55,13 @@ void Pipeline::tracker_baseline_thread(
         tp1 = getTime();
         bool track_flag = true;
         if (track_flag) track_flag = pointer(frame);    //ok
-        if (track_flag) track_flag = locater(frame);
+        if (track_flag) track_flag = locater(frame);    //ok
         if (track_flag) track_flag = updater(frame);
         tp2 = getTime();
 
-        /*debug*/
+        /*debug pnp data*/
         if(frame->target_list.size()>0){
-            std::cout << frame->target_list[0].armor_size << std::endl;
+            std::cout << frame->target_list[0].pose_world << std::endl;
         }
 
         if (Data::pipeline_delay_flag) rm::message("tracker time", getDoubleOfS(tp1, tp2) * 1000);
