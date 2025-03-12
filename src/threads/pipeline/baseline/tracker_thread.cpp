@@ -1,12 +1,16 @@
 #include "threads/pipeline.h"
 #include "threads/control.h"
 
+#include "timer.hpp"
+
 using namespace rm;
 
 void Pipeline::tracker_baseline_thread(
     std::mutex& mutex_in, bool& flag_in, std::shared_ptr<rm::Frame>& frame_in
 ) {
 
+    //性能估计
+    Timer timer, timer1, timer2;
     
     auto garage = Garage::get_instance();
     auto param = Param::get_instance();
@@ -51,13 +55,14 @@ void Pipeline::tracker_baseline_thread(
         frame->pitch = 0;
         frame->roll = 0;
         
-        
+        timer1.begin();
         tp1 = getTime();
         bool track_flag = true;
         if (track_flag) track_flag = pointer(frame);    //ok
         if (track_flag) track_flag = locater(frame);    //ok
         if (track_flag) track_flag = updater(frame);
         tp2 = getTime();
+        timer1.end();
 
         /*debug pnp data*/
         if(frame->target_list.size()>0 && false){
@@ -76,5 +81,19 @@ void Pipeline::tracker_baseline_thread(
             if (Data::ui_flag) UI(frame);
             imshow(frame);
         }
+
+        /*debug*/
+        timer.end();
+        if(false)
+        {
+            printf("---------------------");
+            printf("tracker fps = %f\n", 1000 / timer.read());
+            printf("calculate time = %f ms \n", timer1.read());
+            if(frame->target_list.size()>0){
+                std::cout << "target[0]" << frame->target_list[0].pose_world << std::endl;
+            }
+        }
+        timer.begin();
+
     }
 }

@@ -207,7 +207,7 @@ void Pipeline::detector_baseline_thread(
 
         /*计算帧率*/
         timer.end();
-        if(true)
+        if(false)
         {
             printf("yolo fps = %f\n", 1000.0 / timer.read());
             printf("detector time = %f\n", timer1.read());
