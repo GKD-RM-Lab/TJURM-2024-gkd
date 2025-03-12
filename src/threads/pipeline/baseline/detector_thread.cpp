@@ -9,7 +9,11 @@ using namespace rm;
 //相机驱动
 #include "HIKdriver.hpp"
 
+//rmyolo
 #include "rmyolov7_inference.h"
+
+//timer
+#include "timer.hpp"
 
 
 void Pipeline::detector_baseline_thread(
@@ -37,6 +41,8 @@ void Pipeline::detector_baseline_thread(
     /*推理模型*/
     yolo_kpt model;
     std::vector<yolo_kpt::Object> result;
+    /*帧率统计*/
+    Timer timer, timer1, timer2, timer3;
 
     while (true) {
         // if (!Data::armor_mode) {
@@ -123,24 +129,30 @@ void Pipeline::detector_baseline_thread(
         HIKframemtx.unlock();
         if(inputImage.empty()) continue;
 
+        /*------识别------*/
+        timer1.begin();
         //推理
         result = model.work(inputImage);
         //角点预处理
         model.pnp_kpt_preprocess(result);
+        timer1.end();
 
+        /*------可视化------*/
+        timer2.begin();
         //输出识别信息&绘图(可视化)
-        inputImage.copyTo(label_image);
-        label_image = model.visual_label(label_image, result);
+        if(false)
+        {
+            inputImage.copyTo(label_image);
+            label_image = model.visual_label(label_image, result);
 
-        //没探测到装甲板则等待
-        // if(result.size() == 0) continue;
-
-        //imshow
-        cv::imshow("cam", label_image);
-        if(cv::waitKey(1)=='q') break;
-
-
-        /*把识别数据同步到TJU框架的frame中*/
+            //imshow
+            cv::imshow("cam", label_image);
+            if(cv::waitKey(1)=='q') break;
+        }
+        timer2.end();
+        
+        /*---把识别数据同步到TJU框架的frame中---*/
+        timer3.begin();
         rm::Frame frame;        
         std::vector<YoloRect> yolo_retult;  //从result中提取出的yolo结果
         
@@ -191,7 +203,21 @@ void Pipeline::detector_baseline_thread(
         }
         inputImage.copyTo(*frame.image); //图像
         frame.time_point = std::chrono::high_resolution_clock::now();  //当前时间
-        
+        timer3.end();
+
+        /*计算帧率*/
+        timer.end();
+        if(true)
+        {
+            printf("yolo fps = %f\n", 1000.0 / timer.read());
+            printf("detector time = %f\n", timer1.read());
+            printf("visualize time = %f\n", timer2.read());
+            printf("update time = %f\n", timer3.read());
+            printf("------------------------------------------");
+        }
+        timer.begin();
+
+
         std::unique_lock<std::mutex> lock_out(mutex_out);
         frame_out = std::make_shared<rm::Frame>(frame);
         flag_out = true;

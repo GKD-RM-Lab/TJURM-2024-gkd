@@ -200,7 +200,7 @@ void Control::send_thread() {
         auto objptr = garage->getObj(Data::target_id);
         objptr->getTarget(pose, 0.0, 0.0, 0.0);
         //debug echo pose
-        std::cout << pose << "pose" << std::endl;
+        // std::cout << pose << "pose" << std::endl;
         
         for(int i = 0; i < iteration_num; i++) {
             fly_delay = getFlyDelay(target_yaw, target_pitch, shoot_speed, pose(0, 0), pose(1, 0), pose(2, 0));
@@ -241,7 +241,7 @@ void Control::send_thread() {
         
         //debug 暂时关闭串口
         send_single(target_yaw, target_pitch, fire, Data::target_id);
-        std::cout << "target_yaw" << target_yaw << std::endl;
-        std::cout << "target_pitch" << target_pitch << std::endl;
+        // std::cout << "target_yaw" << target_yaw << std::endl;
+        // std::cout << "target_pitch" << target_pitch << std::endl;
     }
 }

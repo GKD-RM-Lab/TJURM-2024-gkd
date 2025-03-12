@@ -68,7 +68,7 @@ int main(int argc, char** argv) {
     //DEBUG 暂时关闭serial
     // if (Data::serial_flag) init_serial();
     //DEBUG 暂时关闭control
-    control->autoaim();
+    // control->autoaim();
 
     //3v3没能量机关，直接baseline
     pipeline->autoaim_baseline();
