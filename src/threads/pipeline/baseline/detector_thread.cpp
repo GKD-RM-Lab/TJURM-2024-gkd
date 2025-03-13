@@ -128,6 +128,7 @@ void Pipeline::detector_baseline_thread(
         HIKimage.copyTo(inputImage);
         HIKframemtx.unlock();
         if(inputImage.empty()) continue;
+        cv::flip(inputImage, inputImage, -1);
 
         /*------识别------*/
         timer1.begin();
@@ -140,14 +141,17 @@ void Pipeline::detector_baseline_thread(
         /*------可视化------*/
         timer2.begin();
         //输出识别信息&绘图(可视化)
-        if(false)
+        if(0)
         {
             inputImage.copyTo(label_image);
             label_image = model.visual_label(label_image, result);
 
             //imshow
-            cv::imshow("cam", label_image);
-            if(cv::waitKey(1)=='q') break;
+            // cv::imshow("cam", label_image);
+            // if(cv::waitKey(1)=='q') break;
+            static int cnt;
+            if (++cnt % 5 == 0)
+                cv::imwrite("/home/gkd/dev/TJURM-2024-gkd/show.jpg",label_image);
         }
         timer2.end();
         
@@ -207,7 +211,7 @@ void Pipeline::detector_baseline_thread(
 
         /*计算帧率*/
         timer.end();
-        if(false)
+        if(0)
         {
             printf("yolo fps = %f\n", 1000.0 / timer.read());
             printf("detector time = %f\n", timer1.read());

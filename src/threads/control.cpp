@@ -43,7 +43,7 @@ void Control::autoaim() {
 
     //debug 暂时关闭
     // if (Data::serial_flag) {
-    //     std::thread receive_thread(&Control::receive_thread, this);
-    //     receive_thread.detach();
+    std::thread receive_thread(&Control::receive_thread, this);
+    receive_thread.detach();
     // }
 }

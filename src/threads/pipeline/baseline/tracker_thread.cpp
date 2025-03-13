@@ -51,9 +51,9 @@ void Pipeline::tracker_baseline_thread(
         lock_in.unlock();
 
         //deug 假设云台全是0位
-        frame->yaw = 0;
-        frame->pitch = 0;
-        frame->roll = 0;
+        // frame->yaw = 0;
+        // frame->pitch = 0;
+        // frame->roll = 0;
         
         timer1.begin();
         tp1 = getTime();
@@ -84,7 +84,7 @@ void Pipeline::tracker_baseline_thread(
 
         /*debug*/
         timer.end();
-        if(false)
+        if(0)
         {
             printf("---------------------");
             printf("tracker fps = %f\n", 1000 / timer.read());

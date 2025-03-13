@@ -56,6 +56,7 @@ include_directories(
 file(GLOB_RECURSE VISION_SOURCE_FILES
     "${VISION_FORWARD_DIR}/src/*.cpp"
     "${VISION_FORWARD_DIR}/src/*.hpp"
+    "${CMAKE_SOURCE_DIR}/src/send_control/*.cpp"
 )
 
 # 构建子目录（原有结构）

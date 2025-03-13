@@ -1,6 +1,8 @@
 #include "garage/garage.h"
 #include "threads/control.h"
 #include "threads/pipeline.h"
+#include "send_control/send_control.hpp"
+#include "send_control/socket_interface.hpp"
 #include <thread>
 #include <cmath>
 #include <fstream>
@@ -41,6 +43,8 @@ static void init_send() {
     if (speed_write_flag) {
         speed_file.open(speed_save_path, std::ios_base::app);
     }
+
+    init_send("127.0.0.1");
 }
 
 void Control::message() {
@@ -200,10 +204,14 @@ void Control::send_thread() {
         auto objptr = garage->getObj(Data::target_id);
         objptr->getTarget(pose, 0.0, 0.0, 0.0);
         //debug echo pose
-        std::cout << pose << "pose" << std::endl;
+        // std::cout << pose << "pose" << std::endl;
+        if (fabs(pose(0, 0) + pose(1, 0) + pose(2, 0)) < 1e-3) {
+            // send_control(socket_interface.pkg.yaw, target_pitch);
+            continue;
+        }
         
         for(int i = 0; i < iteration_num; i++) {
-            fly_delay = getFlyDelay(target_yaw, target_pitch, shoot_speed, pose(0, 0), pose(1, 0), pose(2, 0));
+            fly_delay = getFlyDelay(target_yaw, target_pitch, shoot_speed, pose(2, 0) / 1000, pose(0, 0) / 1000, -pose(1, 0) / 1000);
             fire = objptr->getTarget(pose, fly_delay, rotate_delay, shoot_delay);
         }
         rm::message("target pitch b", target_pitch);
@@ -240,8 +248,16 @@ void Control::send_thread() {
         fire = (fire && start_delay_flag && autoaim_flag && Data::auto_fire);
         
         //debug 暂时关闭串口
-        send_single(target_yaw, target_pitch, fire, Data::target_id);
-        std::cout << "target_yaw" << target_yaw << std::endl;
-        std::cout << "target_pitch" << target_pitch << std::endl;
+        // send_single(target_yaw, target_pitch, fire, Data::target_id);
+        // constexpr double DELTA = 0.05;
+        // std::clamp(target_yaw, -DELTA, DELTA);
+        if(fabs(target_yaw) > 0.2) target_yaw *= 0.5;
+	    target_pitch *= 0.2;
+        // target_yaw *= (std::min(0.5, 9. * (fabs(target_yaw))));
+        send_control(socket_interface.pkg.yaw + target_yaw, socket_interface.pkg.pitch + target_pitch);
+        // printf("cur yaw:%.3f\ttarget yaw:%.3f\n", socket_interface.pkg.yaw, socket_interface.pkg.yaw + target_yaw);
+        printf("cur pitch:%.3f\ttarget pith:%.3f\n", socket_interface.pkg.pitch, socket_interface.pkg.pitch+ target_pitch);
+        // std::cout << "target_yaw" << target_yaw << std::endl;
+        // std::cout << "target_pitch" << target_pitch << std::endl;
     }
 }
