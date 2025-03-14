@@ -12,6 +12,7 @@
 
 struct ReceiveGimbalInfo
 {
+	uint8_t header;
     float yaw;
     float pitch;
 } __attribute__((packed));

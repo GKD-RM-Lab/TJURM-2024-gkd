@@ -69,6 +69,7 @@ void send_control(double yaw_set, double pitch_set)
     pkg.pitch_set = pitch_set;
 
 
+    //printf("send control\n");
     auto n = sendto(
     sockfd,
     (const char *)(&pkg),

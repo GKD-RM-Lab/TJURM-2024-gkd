@@ -113,10 +113,10 @@ int frontend_task(int argc, char** argv) {
         
         //输出识别信息&绘图
         inputImage = model.visual_label(inputImage, result);
-        if(params.imshow_en == 1){
-            cv::imshow("label", inputImage);
-        }    
-        if(cv::waitKey(1) == 'q') break;
+        // if(params.imshow_en == 1){
+        //     cv::imshow("label", inputImage);
+        // }    
+        //if(cv::waitKey(1) == 'q') break;
 
         timer2.end();
         std::cout << "display->" << 1000/timer2.read() << "fps" << std::endl;

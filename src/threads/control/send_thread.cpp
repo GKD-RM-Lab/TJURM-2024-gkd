@@ -6,6 +6,9 @@
 #include <thread>
 #include <cmath>
 #include <fstream>
+
+#include "timer.hpp"
+
 using namespace rm;
 
 static double shoot_speed, shoot_delay;
@@ -69,6 +72,7 @@ void Control::message() {
 void Control::state() {
     auto pipeline = Pipeline::get_instance();
     auto garage = Garage::get_instance();
+
 
     // 通过电控获取敌方颜色
     Data::enemy_color = get_enemy();
@@ -164,6 +168,9 @@ void Control::send_thread() {
 
     init_send();
     
+    Timer timer, timer1;    //debug timer
+
+
     std::mutex mutex;
     while(true) {
         if(!send_flag_) {
@@ -247,16 +254,22 @@ void Control::send_thread() {
 
         fire = (fire && start_delay_flag && autoaim_flag && Data::auto_fire);
         
+        /*potimize debug info*/
+        // timer.end();
+        // printf("control update period = %f\n", timer.read());    //~10ms
+        // timer.begin();
+
         //debug 暂时关闭串口
         // send_single(target_yaw, target_pitch, fire, Data::target_id);
         // constexpr double DELTA = 0.05;
         // std::clamp(target_yaw, -DELTA, DELTA);
-        if(fabs(target_yaw) > 0.2) target_yaw *= 0.5;
-	    target_pitch *= 0.2;
+        target_yaw *= 0.5;
+        target_pitch *= 0.2;
+        printf("send control\n");
         // target_yaw *= (std::min(0.5, 9. * (fabs(target_yaw))));
         send_control(socket_interface.pkg.yaw + target_yaw, socket_interface.pkg.pitch + target_pitch);
         // printf("cur yaw:%.3f\ttarget yaw:%.3f\n", socket_interface.pkg.yaw, socket_interface.pkg.yaw + target_yaw);
-        printf("cur pitch:%.3f\ttarget pith:%.3f\n", socket_interface.pkg.pitch, socket_interface.pkg.pitch+ target_pitch);
+        // printf("cur pitch:%.3f\ttarget pith:%.3f\n", socket_interface.pkg.pitch, socket_interface.pkg.pitch+ target_pitch);
         // std::cout << "target_yaw" << target_yaw << std::endl;
         // std::cout << "target_pitch" << target_pitch << std::endl;
     }

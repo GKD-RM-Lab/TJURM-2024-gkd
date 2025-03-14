@@ -115,7 +115,7 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
         cv::Mat gray, binary;
         rm::getGrayScale(roi, gray, Data::enemy_color, rm::GRAY_SCALE_METHOD_CVT);
 
-        // rm::getBinary(gray, binary, binary_ratio, rm::BINARY_METHOD_MAX_MIN_RATIO);
+        rm::getBinary(gray, binary, binary_ratio, rm::BINARY_METHOD_MAX_MIN_RATIO);
 
         int threshold_from_hist = rm::getThresholdFromHist(roi, 8, binary_ratio);
         threshold_from_hist = std::clamp(threshold_from_hist, 10, 100);
@@ -191,7 +191,7 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
                 }
                 continue;
             }
-
+            
             bool color_skip_flag = false;
             
             #ifdef TJURM_SENTRY
@@ -204,12 +204,13 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
             color_skip_flag = color_skip_flag || (armor.color == rm::ARMOR_COLOR_NONE);
             #endif
             
-
+            
             if (Data::auto_enemy && color_skip_flag) {
                 if (Data::point_skip_flag) rm::message("Color is on our part", rm::MSG_NOTE);
                 if (Data::image_flag && Data::ui_flag) {
                     rm::displaySingleArmorClass(*(frame->image), armor);
                     rm::displaySingleArmorRect(*(frame->image), armor);
+                    printf("run here\n");
                 }
                 continue;
             }
@@ -242,7 +243,7 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
         // TODO 查看elevation是在哪边被赋值的，yolo里没有给elevation赋值
         //（以及elevation是什么）
         // elevation似乎是在yaw pnp里算的，这里不用管
-        if(false)
+        if(true)
         {
             std::cout << "4pts size:" << armor.four_points.size() << std::endl;
             if(armor.four_points.size() >0){
