@@ -121,14 +121,14 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
         threshold_from_hist = std::clamp(threshold_from_hist, 10, 100);
         rm::getBinary(gray, binary, threshold_from_hist, rm::BINARY_METHOD_DIRECT_THRESHOLD);
 
-        if (Data::image_flag && Data::binary_flag) {
+        if (Data::image_flag && Data::binary_flag || true) {    //debug
             cv::imshow("gray", gray);
             cv::imshow("binary", binary);
             cv::waitKey(1);
         }
 
         //计算了装甲板roi的直方图？？
-        if (Data::image_flag && Data::histogram_flag) {
+        if (Data::image_flag && Data::histogram_flag){  
             cv::Mat showHist;
             rm::getThresholdFromHist(roi, showHist, 8, binary_ratio);
             cv::imshow("histogram", showHist);
@@ -166,7 +166,8 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
         armor.color = rm::getArmorColorFromHSV(roi, best_pair);
         
         //当yolo识别出完整四点时，不使用传统算法识别四点
-        if(yolo_rect.four_points.size() == 4)
+        //DEBUG deactive yolo 4 points <- TODO CHECK 
+        if(yolo_rect.four_points.size() == 4 && false)  //debug
         {
             //移植四点数据
             armor.four_points = yolo_rect.four_points;
@@ -204,14 +205,15 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
             color_skip_flag = color_skip_flag || (armor.color == rm::ARMOR_COLOR_NONE);
             #endif
             
-            
-            if (Data::auto_enemy && color_skip_flag) {
+            //end at here
+            //DEBUG deactivated color select <- TODO REMOVE OR CHANGE LOGIC
+            if (Data::auto_enemy && color_skip_flag && false) {      
                 if (Data::point_skip_flag) rm::message("Color is on our part", rm::MSG_NOTE);
                 if (Data::image_flag && Data::ui_flag) {
                     rm::displaySingleArmorClass(*(frame->image), armor);
                     rm::displaySingleArmorRect(*(frame->image), armor);
-                    printf("run here\n");
                 }
+                std::cout << "auto enemy" << color_skip_flag << std::endl;  //debug
                 continue;
             }
             
@@ -243,10 +245,10 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
         // TODO 查看elevation是在哪边被赋值的，yolo里没有给elevation赋值
         //（以及elevation是什么）
         // elevation似乎是在yaw pnp里算的，这里不用管
-        if(true)
+        if(false)
         {
             std::cout << "4pts size:" << armor.four_points.size() << std::endl;
-            if(armor.four_points.size() >0){
+            if(armor.four_points.size() >0 ){
                 std::cout << armor.four_points[0] << std::endl;
             }
             if(frame->yolo_list.size()>0)

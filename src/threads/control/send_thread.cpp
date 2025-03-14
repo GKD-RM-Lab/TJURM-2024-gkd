@@ -211,7 +211,7 @@ void Control::send_thread() {
         auto objptr = garage->getObj(Data::target_id);
         objptr->getTarget(pose, 0.0, 0.0, 0.0);
         //debug echo pose
-        // std::cout << pose << "pose" << std::endl;
+        std::cout << "pose\n" << pose << std::endl;
         if (fabs(pose(0, 0) + pose(1, 0) + pose(2, 0)) < 1e-3) {
             // send_control(socket_interface.pkg.yaw, target_pitch);
             continue;
@@ -265,9 +265,13 @@ void Control::send_thread() {
         // std::clamp(target_yaw, -DELTA, DELTA);
         target_yaw *= 0.5;
         target_pitch *= 0.2;
-        printf("send control\n");
+        // printf("send control\n");
+        
+        
         // target_yaw *= (std::min(0.5, 9. * (fabs(target_yaw))));
         send_control(socket_interface.pkg.yaw + target_yaw, socket_interface.pkg.pitch + target_pitch);
+        
+        
         // printf("cur yaw:%.3f\ttarget yaw:%.3f\n", socket_interface.pkg.yaw, socket_interface.pkg.yaw + target_yaw);
         // printf("cur pitch:%.3f\ttarget pith:%.3f\n", socket_interface.pkg.pitch, socket_interface.pkg.pitch+ target_pitch);
         // std::cout << "target_yaw" << target_yaw << std::endl;
