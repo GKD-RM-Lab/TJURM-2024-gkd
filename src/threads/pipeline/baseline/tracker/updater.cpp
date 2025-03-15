@@ -20,8 +20,18 @@ bool Pipeline::updater(std::shared_ptr<rm::Frame> frame) {
 
     for(auto& target : frame->target_list) {
         rm::ArmorID armor_id = target.armor_id;
-        ObjPtr objptr = garage->getObj(armor_id);
+        ObjPtr objptr = garage->getObj(ARMOR_ID_INFANTRY_3);
+
+        double pose0 = target.pose_world[2] / 1000;
+        double pose1 = target.pose_world[0] / 1000;
+        double pose2 = -target.pose_world[1] / 1000;
+        target.pose_world[0] = pose0;
+        target.pose_world[1] = pose1;
+        target.pose_world[2] = pose2;
+        
         objptr->push(target, frame->time_point);
+
+        // std::cout << "target_id vision" << armor_id << std::endl;
 
         double angle = rm::getAngleOffsetTargetToReferee(
             control->get_yaw(), control->get_pitch(),
@@ -35,7 +45,8 @@ bool Pipeline::updater(std::shared_ptr<rm::Frame> frame) {
 
     for (auto& objptr : garage->obj_)
         objptr->update();
-    
+
+
     if ((frame->target_list).empty()) return false;
     return true;
 }

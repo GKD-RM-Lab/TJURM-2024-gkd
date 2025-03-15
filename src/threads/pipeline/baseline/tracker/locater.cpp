@@ -193,6 +193,12 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
         double distance = sqrt(pow(target.pose_world(0), 2) + pow(target.pose_world(1), 2) + pow(target.pose_world(2), 2));
         rm::message("pnp dist", distance);
         rm::message("pnp yaw", target.armor_yaw_world * (180 / M_PI));
+
+        if(false)
+        {
+            std::cout << "pnp dist" << distance << std::endl;
+            std::cout << "pnp yaw" << target.armor_yaw_world * (180 / M_PI) << std::endl;
+        }
     }
 
     if(frame->target_list.size() == 0) {

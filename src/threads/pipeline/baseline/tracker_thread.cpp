@@ -58,9 +58,13 @@ void Pipeline::tracker_baseline_thread(
         timer1.begin();
         tp1 = getTime();
         bool track_flag = true;
-        if (track_flag) track_flag = pointer(frame);    //debuging
-        if (track_flag) track_flag = locater(frame);    //ok
-        if (track_flag) track_flag = updater(frame);
+        if (track_flag) track_flag = pointer(frame);    //debug ~ok
+        if (track_flag) track_flag = locater(frame);    //debug ~ok
+        if (track_flag) track_flag = updater(frame);    //<- PROBLEM HERE
+
+        /*DEBUG LOG*/
+        //err at track_thread 
+
         tp2 = getTime();
         timer1.end();
 
@@ -84,9 +88,9 @@ void Pipeline::tracker_baseline_thread(
 
         /*debug*/
         timer.end();
-        if(false)
+        if(true)
         {
-            printf("---------------------");
+            printf("---------------------\n");
             printf("tracker fps = %f\n", 1000 / timer.read());
             printf("calculate time = %f ms \n", timer1.read());
             if(frame->target_list.size()>0){

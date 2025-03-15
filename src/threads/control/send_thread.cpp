@@ -167,7 +167,6 @@ void Control::send_thread() {
     auto pipeline = Pipeline::get_instance();
 
     init_send();
-    
     Timer timer, timer1;    //debug timer
 
 
@@ -208,17 +207,28 @@ void Control::send_thread() {
         }
 
         // 迭代法求解击打 yaw, pitch
-        auto objptr = garage->getObj(Data::target_id);
+
+        // auto objptr = garage->getObj(Data::target_id);
+        auto objptr = garage->getObj(ARMOR_ID_INFANTRY_3);
+        // std::cout << "target_id control" << Data::target_id << std::endl;
         objptr->getTarget(pose, 0.0, 0.0, 0.0);
-        //debug echo pose
-        std::cout << "pose\n" << pose << std::endl;
+        /*DEBUG estimated pose report rate*/
+        printf("address 2 0x%x\n",objptr.get());
+        if(true)
+        {
+            timer1.end();
+            std::cout << "pose\n" << pose << std::endl;
+            std::cout << "time used = " << timer1.read() << std::endl;
+            timer1.begin();
+        }
+            
         if (fabs(pose(0, 0) + pose(1, 0) + pose(2, 0)) < 1e-3) {
             // send_control(socket_interface.pkg.yaw, target_pitch);
             continue;
         }
         
         for(int i = 0; i < iteration_num; i++) {
-            fly_delay = getFlyDelay(target_yaw, target_pitch, shoot_speed, pose(2, 0) / 1000, pose(0, 0) / 1000, -pose(1, 0) / 1000);
+            fly_delay = getFlyDelay(target_yaw, target_pitch, shoot_speed, pose(0, 0), pose(1, 0), pose(2, 0));
             fire = objptr->getTarget(pose, fly_delay, rotate_delay, shoot_delay);
         }
         rm::message("target pitch b", target_pitch);
@@ -263,13 +273,14 @@ void Control::send_thread() {
         // send_single(target_yaw, target_pitch, fire, Data::target_id);
         // constexpr double DELTA = 0.05;
         // std::clamp(target_yaw, -DELTA, DELTA);
-        target_yaw *= 0.5;
-        target_pitch *= 0.2;
+        //target_yaw *= 0.5;
+        //target_pitch *= 0.2;
         // printf("send control\n");
         
         
         // target_yaw *= (std::min(0.5, 9. * (fabs(target_yaw))));
         send_control(socket_interface.pkg.yaw + target_yaw, socket_interface.pkg.pitch + target_pitch);
+        
         
         
         // printf("cur yaw:%.3f\ttarget yaw:%.3f\n", socket_interface.pkg.yaw, socket_interface.pkg.yaw + target_yaw);
