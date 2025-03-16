@@ -284,14 +284,14 @@ void Control::send_thread() {
         //target_pitch *= 0.2;
         // printf("send control\n");
         
-        
         // target_yaw *= (std::min(0.5, 9. * (fabs(target_yaw))));
         if (get_frame.exchange(false)) {    //sync 
+            printf("run here \n");
             // if (abs(target_yaw - last_target_yaw) < 0.2)
             {
                 send_control(socket_interface.pkg.yaw - target_yaw, socket_interface.pkg.pitch + target_pitch);
-                // std::cout << "pose\n" << pose << std::endl;
-                // std::cout << "\nyaw: " << socket_interface.pkg.yaw - target_yaw << "\npitch: " << socket_interface.pkg.pitch + target_pitch << std::endl;
+                std::cout << "pose\n" << pose << std::endl;
+                std::cout << "\nyaw: " << socket_interface.pkg.yaw - target_yaw << "\npitch: " << socket_interface.pkg.pitch + target_pitch << std::endl;
                 last_target_yaw = target_yaw;
             }
             // send_control(socket_interface.pkg.yaw - target_yaw, socket_interface.pkg.pitch + target_pitch);

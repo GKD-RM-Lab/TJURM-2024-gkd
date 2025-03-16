@@ -57,10 +57,9 @@ void Pipeline::tracker_baseline_thread(
         flag_in = false;
         lock_in.unlock();
 
-        // deug 假设云台全是0位
-        //  frame->yaw = 0;
-        //  frame->pitch = 0;
-        //  frame->roll = 0;
+        frame->yaw = Data::yaw;
+        frame->pitch = Data::pitch;
+        frame->roll = Data::roll;
 
         timer1.begin();
         tp1 = getTime();
@@ -68,7 +67,7 @@ void Pipeline::tracker_baseline_thread(
         if (track_flag)
             track_flag = pointer(frame); // debug ~ok
         if (track_flag)
-            track_flag = locater(frame); // debug ~ok
+            track_flag = locater(frame); // debug ~ok <- PROBLEM HERE (PNP ABS)
         if (track_flag)
             track_flag = updater(frame); //<- PROBLEM HERE
 
@@ -108,11 +107,11 @@ void Pipeline::tracker_baseline_thread(
             printf("---------------------\n");
             printf("tracker fps = %f\n", 1000 / timer.read());
             printf("calculate time = %f ms \n", timer1.read());
-            if (frame->target_list.size() > 0)
-            {
-                std::cout << "target[0]" << frame->target_list[0].pose_world << std::endl;
-                get_frame = true;
-            }
+        }
+        if (frame->target_list.size() > 0)
+        {
+            std::cout << "target[0]" << frame->target_list[0].pose_world << std::endl;
+            get_frame = true;
         }
         timer.begin();
     }

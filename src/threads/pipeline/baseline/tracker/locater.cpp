@@ -81,6 +81,11 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
 
     // rm::Camera* camera = Data::camera[frame->camera_id];
 
+    /*DEBUG 检查yaw pitch形式*/
+    // frame->yaw = -frame->yaw;
+    // frame->pitch = -frame->pitch;
+    frame->yaw = 0;
+    frame->pitch = 0;
     // rotate_pnp2head = camera->Rotate_pnp2head;
     rm::tf_rotate_head2world(rotate_head2world, frame->yaw, frame->pitch, frame->roll);
 

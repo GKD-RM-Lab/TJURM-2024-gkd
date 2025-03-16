@@ -88,6 +88,7 @@ void Control::receive_thread() {
         Data::yaw   = socket_interface.pkg.yaw;
         Data::pitch = socket_interface.pkg.pitch;
         Data::roll  = 0;
+        // std::cout << "run here" << std::endl;
 
         #if defined(TJURM_INFANTRY) || defined(TJURM_BALANCE)
         Data::yaw_omega = get_yaw_omega();

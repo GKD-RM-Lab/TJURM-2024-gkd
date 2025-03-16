@@ -27,12 +27,12 @@ bool Pipeline::updater(std::shared_ptr<rm::Frame> frame)
         rm::ArmorID armor_id = target.armor_id;
         ObjPtr objptr = garage->getObj(ARMOR_ID_INFANTRY_3);
 
-        double pose0 = target.pose_world[2];
-        double pose1 = -target.pose_world[0];
-        double pose2 = -target.pose_world[1];
-        target.pose_world[0] = pose0;
-        target.pose_world[1] = pose1;
-        target.pose_world[2] = pose2;
+        // double pose0 = target.pose_world[2];
+        // double pose1 = -target.pose_world[0];
+        // double pose2 = -target.pose_world[1];
+        // target.pose_world[0] = pose0;
+        // target.pose_world[1] = pose1;
+        // target.pose_world[2] = pose2;
         if (temp >= 1)
         {
             // std::cout << "\npose0: " << pose0 << "\npose1: " << pose1 << "\npose2: " << pose2 << std::endl;
