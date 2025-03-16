@@ -6,6 +6,7 @@
 #include <thread>
 #include <cmath>
 #include <fstream>
+#include <iostream>
 
 #include "timer.hpp"
 
@@ -27,6 +28,9 @@ static bool last_autoaim = false;
 static std::ofstream speed_file;
 static bool speed_write_flag;
 static rm::SpeedQueue<float> speed_queue(3, 15.75f, {0.5, 0.3, 0.2});
+
+#include <atomic>
+extern std::atomic_bool get_frame;
 
 
 static void init_send() {
@@ -165,12 +169,15 @@ void Control::shootspeed() {
 void Control::send_thread() {
     auto garage = Garage::get_instance();
     auto pipeline = Pipeline::get_instance();
-
+    static double last_target_yaw = 0;
     init_send();
     Timer timer, timer1;    //debug timer
 
 
     std::mutex mutex;
+    
+    static int count = 0;
+
     while(true) {
         if(!send_flag_) {
             std::unique_lock<std::mutex> lock(mutex);
@@ -213,8 +220,8 @@ void Control::send_thread() {
         // std::cout << "target_id control" << Data::target_id << std::endl;
         objptr->getTarget(pose, 0.0, 0.0, 0.0);
         /*DEBUG estimated pose report rate*/
-        printf("address 2 0x%x\n",objptr.get());
-        if(true)
+        // printf("address 2 0x%x\n",objptr.get());
+        if(false)
         {
             timer1.end();
             std::cout << "pose\n" << pose << std::endl;
@@ -224,7 +231,7 @@ void Control::send_thread() {
             
         if (fabs(pose(0, 0) + pose(1, 0) + pose(2, 0)) < 1e-3) {
             // send_control(socket_interface.pkg.yaw, target_pitch);
-            continue;
+            // continue;
         }
         
         for(int i = 0; i < iteration_num; i++) {
@@ -279,9 +286,22 @@ void Control::send_thread() {
         
         
         // target_yaw *= (std::min(0.5, 9. * (fabs(target_yaw))));
-        send_control(socket_interface.pkg.yaw + target_yaw, socket_interface.pkg.pitch + target_pitch);
-        
-        
+        if (get_frame.exchange(false)) {
+            // if (abs(target_yaw - last_target_yaw) < 0.2)
+            {
+                send_control(socket_interface.pkg.yaw - target_yaw, socket_interface.pkg.pitch + target_pitch);
+                std::cout << "pose\n" << pose << std::endl;
+                std::cout << "\nyaw: " << socket_interface.pkg.yaw - target_yaw << "\npitch: " << socket_interface.pkg.pitch + target_pitch << std::endl;
+                last_target_yaw = target_yaw;
+            }
+            // send_control(socket_interface.pkg.yaw - target_yaw, socket_interface.pkg.pitch + target_pitch);
+            //     std::cout << "\nyaw: " << socket_interface.pkg.yaw - target_yaw << "\npitch: " << socket_interface.pkg.pitch + target_pitch << std::endl;
+            //     last_target_yaw = target_yaw;
+            count = 0;
+            
+        }
+        count ++;
+        // std::this_thread::sleep_for(std::chrono::milliseconds(200));
         
         // printf("cur yaw:%.3f\ttarget yaw:%.3f\n", socket_interface.pkg.yaw, socket_interface.pkg.yaw + target_yaw);
         // printf("cur pitch:%.3f\ttarget pith:%.3f\n", socket_interface.pkg.pitch, socket_interface.pkg.pitch+ target_pitch);

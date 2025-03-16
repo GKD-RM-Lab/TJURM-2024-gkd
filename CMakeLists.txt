@@ -4,7 +4,7 @@ project(TJURM-2024)
 # 设置编译指令
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE DEBUG)
-add_compile_options(-g)
+add_compile_options(-g3)
 
 # 目标兵种保持要选的即可
 add_definitions(-DTJURM_INFANTRY)

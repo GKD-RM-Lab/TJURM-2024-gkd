@@ -40,63 +40,68 @@ static double enemy_split;
 static std::vector<int> armor_class_map;
 static std::vector<int> armor_color_map;
 
-void Pipeline::init_pointer() {
+void Pipeline::init_pointer()
+{
     auto param = Param::get_instance();
 
     // 设置装甲板ID映射
-    std::string      yolo_type      = (*param)["Model"]["YoloArmor"]["Type"];
+    std::string yolo_type = (*param)["Model"]["YoloArmor"]["Type"];
     std::vector<int> temp_class_map = (*param)["Model"]["YoloArmor"][yolo_type]["ClassMap"];
     std::vector<int> temp_color_map = (*param)["Model"]["YoloArmor"][yolo_type]["ColorMap"];
     armor_class_map = temp_class_map;
     armor_color_map = temp_color_map;
 
-    roi_extend_w           = (*param)["Points"]["Extend"]["ROIwidth"];
-    roi_extend_h           = (*param)["Points"]["Extend"]["ROIheight"];
-    point_line_dist        = (*param)["Points"]["Extend"]["PointLineDist"];
-    point_radius_ratio     = (*param)["Points"]["Extend"]["PointRadiusRatio"];
+    roi_extend_w = (*param)["Points"]["Extend"]["ROIwidth"];
+    roi_extend_h = (*param)["Points"]["Extend"]["ROIheight"];
+    point_line_dist = (*param)["Points"]["Extend"]["PointLineDist"];
+    point_radius_ratio = (*param)["Points"]["Extend"]["PointRadiusRatio"];
 
-    lb_min_rect_side       = (*param)["Points"]["Lightbar"]["MinRectSide"];
-    lb_max_rect_side       = (*param)["Points"]["Lightbar"]["MaxRectSide"];
-    lb_min_area            = (*param)["Points"]["Lightbar"]["MinArea"];
-    lb_min_ratio_area      = (*param)["Points"]["Lightbar"]["MinRatioArea"];
-    lb_max_angle           = (*param)["Points"]["Lightbar"]["MaxAngle"];
+    lb_min_rect_side = (*param)["Points"]["Lightbar"]["MinRectSide"];
+    lb_max_rect_side = (*param)["Points"]["Lightbar"]["MaxRectSide"];
+    lb_min_area = (*param)["Points"]["Lightbar"]["MinArea"];
+    lb_min_ratio_area = (*param)["Points"]["Lightbar"]["MinRatioArea"];
+    lb_max_angle = (*param)["Points"]["Lightbar"]["MaxAngle"];
 
     armor_max_ratio_length = (*param)["Points"]["Armor"]["MaxRatioLength"];
-    armor_max_ratio_area   = (*param)["Points"]["Armor"]["MaxRatioArea"];
-    armor_min_ratio_side   = (*param)["Points"]["Armor"]["RatioSide"]["Min"];
-    armor_max_ratio_side   = (*param)["Points"]["Armor"]["RatioSide"]["Max"];
-    armor_max_angle_diff   = (*param)["Points"]["Armor"]["MaxAngleDiff"];
-    armor_max_angle_avg    = (*param)["Points"]["Armor"]["MaxAngleAvg"];
-    armor_max_offset       = (*param)["Points"]["Armor"]["MaxOffset"];
-    armor_size_ratio       = (*param)["Points"]["Armor"]["SizeRatio"];
+    armor_max_ratio_area = (*param)["Points"]["Armor"]["MaxRatioArea"];
+    armor_min_ratio_side = (*param)["Points"]["Armor"]["RatioSide"]["Min"];
+    armor_max_ratio_side = (*param)["Points"]["Armor"]["RatioSide"]["Max"];
+    armor_max_angle_diff = (*param)["Points"]["Armor"]["MaxAngleDiff"];
+    armor_max_angle_avg = (*param)["Points"]["Armor"]["MaxAngleAvg"];
+    armor_max_offset = (*param)["Points"]["Armor"]["MaxOffset"];
+    armor_size_ratio = (*param)["Points"]["Armor"]["SizeRatio"];
     armor_tower_size_ratio = (*param)["Points"]["Armor"]["TowerSizeRatio"];
     armor_min_area_percent = (*param)["Points"]["Armor"]["AreaPercent"];
 
+    // 获取装甲板长宽
+    big_red_width = (*param)["Points"]["PnP"]["Red"]["BigArmor"]["Width"];
+    big_red_height = (*param)["Points"]["PnP"]["Red"]["BigArmor"]["Height"];
+    small_red_width = (*param)["Points"]["PnP"]["Red"]["SmallArmor"]["Width"];
+    small_red_height = (*param)["Points"]["PnP"]["Red"]["SmallArmor"]["Height"];
 
     // 获取装甲板长宽
-    big_red_width          = (*param)["Points"]["PnP"]["Red"]["BigArmor"]["Width"];
-    big_red_height         = (*param)["Points"]["PnP"]["Red"]["BigArmor"]["Height"];
-    small_red_width        = (*param)["Points"]["PnP"]["Red"]["SmallArmor"]["Width"];
-    small_red_height       = (*param)["Points"]["PnP"]["Red"]["SmallArmor"]["Height"];
-
-    // 获取装甲板长宽
-    big_blue_width         = (*param)["Points"]["PnP"]["Blue"]["BigArmor"]["Width"];
-    big_blue_height        = (*param)["Points"]["PnP"]["Blue"]["BigArmor"]["Height"];
-    small_blue_width       = (*param)["Points"]["PnP"]["Blue"]["SmallArmor"]["Width"];
-    small_blue_height      = (*param)["Points"]["PnP"]["Blue"]["SmallArmor"]["Height"];
+    big_blue_width = (*param)["Points"]["PnP"]["Blue"]["BigArmor"]["Width"];
+    big_blue_height = (*param)["Points"]["PnP"]["Blue"]["BigArmor"]["Height"];
+    small_blue_width = (*param)["Points"]["PnP"]["Blue"]["SmallArmor"]["Width"];
+    small_blue_height = (*param)["Points"]["PnP"]["Blue"]["SmallArmor"]["Height"];
 
     enemy_split = (*param)["Points"]["Threshold"]["EnemySplit"];
 }
 
-bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
+bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame)
+{
     auto param = Param::get_instance();
-    if(Data::enemy_color == rm::ARMOR_COLOR_RED) {
+    if (Data::enemy_color == rm::ARMOR_COLOR_RED)
+    {
         binary_ratio = (*param)["Points"]["Threshold"]["RatioRed"];
-    } else {
+    }
+    else
+    {
         binary_ratio = (*param)["Points"]["Threshold"]["RatioBlue"];
     }
 
-    for (auto& yolo_rect : frame->yolo_list) {
+    for (auto &yolo_rect : frame->yolo_list)
+    {
         rm::Armor armor;
         armor.id = (rm::ArmorID)(armor_class_map[yolo_rect.class_id]);
         armor.color = (rm::ArmorColor)(armor_color_map[yolo_rect.color_id]);
@@ -104,12 +109,13 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
         armor.size = ARMOR_SIZE_SMALL_ARMOR;
         setArmorRectCenter(armor);
 
+#if defined(TJURM_INFANTRY) || defined(TJURM_BALANCE) || defined(TJURM_HERO)
+        if ((Data::state == 1) && (armor.id != rm::ARMOR_ID_TOWER))
+            continue;
+#endif
 
-        #if defined(TJURM_INFANTRY) || defined(TJURM_BALANCE) || defined(TJURM_HERO)
-        if ((Data::state == 1) && (armor.id != rm::ARMOR_ID_TOWER)) continue;
-        #endif
-
-        if (!isRectValidInImage(*frame->image, armor.rect)) continue;
+        if (!isRectValidInImage(*frame->image, armor.rect))
+            continue;
         cv::Mat roi = (*frame->image)(armor.rect);
 
         cv::Mat gray, binary;
@@ -121,28 +127,29 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
         threshold_from_hist = std::clamp(threshold_from_hist, 10, 100);
         rm::getBinary(gray, binary, threshold_from_hist, rm::BINARY_METHOD_DIRECT_THRESHOLD);
 
-        if (Data::image_flag && Data::binary_flag || true) {    //debug
+        if (Data::image_flag && Data::binary_flag)
+        { // debug
             cv::imshow("gray", gray);
             cv::imshow("binary", binary);
             cv::waitKey(1);
         }
 
-        //计算了装甲板roi的直方图？？
-        if (Data::image_flag && Data::histogram_flag){  
+        // 计算了装甲板roi的直方图？？
+        if (Data::image_flag && Data::histogram_flag)
+        {
             cv::Mat showHist;
             rm::getThresholdFromHist(roi, showHist, 8, binary_ratio);
             cv::imshow("histogram", showHist);
             cv::waitKey(1);
         }
 
-        
         std::vector<std::vector<cv::Point>> contours;
         cv::findContours(binary, contours, cv::RETR_LIST, cv::CHAIN_APPROX_NONE);
-        
+
         std::vector<rm::Lightbar> lightbar_list;
         rm::getLightbarsFromContours(
-            contours, 
-            lightbar_list, 
+            contours,
+            lightbar_list,
             lb_min_rect_side,
             lb_max_rect_side,
             lb_min_area,
@@ -152,9 +159,9 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
         rm::LightbarPair best_pair;
 
         bool flag = rm::getBestMatchedLightbarPair(
-            lightbar_list, 
-            armor, 
-            best_pair, 
+            lightbar_list,
+            armor,
+            best_pair,
             armor_max_ratio_length,
             armor_max_ratio_area,
             armor_min_ratio_side,
@@ -164,77 +171,92 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
             armor_max_offset);
 
         armor.color = rm::getArmorColorFromHSV(roi, best_pair);
-        
-        //当yolo识别出完整四点时，不使用传统算法识别四点
-        //DEBUG deactive yolo 4 points <- TODO CHECK 
-        if(yolo_rect.four_points.size() == 4)  //debug
+
+        // 当yolo识别出完整四点时，不使用传统算法识别四点
+        // DEBUG deactive yolo 4 points <- TODO CHECK
+        if (yolo_rect.four_points.size() == 4 && false) // debug
         {
-            //移植四点数据
+            // 移植四点数据
             armor.four_points = yolo_rect.four_points;
-            //按照类别分类大小装甲板
-            //class映射是直接截取前半
+            // 按照类别分类大小装甲板
+            // class映射是直接截取前半
             const std::vector<std::string> class_names = {
-                "B1", "B2", "B3", "B4", "B5", "BO", "BS", "R1", "R2", "R3", "R4", "R5", "RO", "RS"
-            };
-            if(class_names[yolo_rect.class_id] == "B1" || class_names[yolo_rect.class_id] == "R1" ){
+                "B1", "B2", "B3", "B4", "B5", "BO", "BS", "R1", "R2", "R3", "R4", "R5", "RO", "RS"};
+            if (class_names[yolo_rect.class_id] == "B1" || class_names[yolo_rect.class_id] == "R1")
+            {
                 armor.size = ARMOR_SIZE_BIG_ARMOR;
-            }else{
+            }
+            else
+            {
                 armor.size = ARMOR_SIZE_SMALL_ARMOR;
             }
-            
+
             // printf("yolo used\n");
-        }else{
-            if (!flag) {
-                if (Data::point_skip_flag) rm::message("No lightbar pair found", rm::MSG_NOTE);
-                if (Data::image_flag && Data::ui_flag) {
+        }
+        else
+        {
+            if (!flag)
+            {
+                if (Data::point_skip_flag)
+                    rm::message("No lightbar pair found", rm::MSG_NOTE);
+                if (Data::image_flag && Data::ui_flag)
+                {
                     rm::displaySingleArmorClass(*(frame->image), armor);
                     rm::displaySingleArmorRect(*(frame->image), armor);
                 }
                 continue;
             }
-            
+
             bool color_skip_flag = false;
-            
-            #ifdef TJURM_SENTRY
+
+#ifdef TJURM_SENTRY
             color_skip_flag = color_skip_flag || !rm::isArmorColorEnemy(roi, best_pair, Data::enemy_color, enemy_split);
             color_skip_flag = color_skip_flag || (armor.color != Data::enemy_color);
-            #endif
-            
-            #if defined(TJURM_INFANTRY) || defined(TJURM_BALANCE) || defined(TJURM_HERO) || defined(TJURM_DRONSE)
+#endif
+
+#if defined(TJURM_INFANTRY) || defined(TJURM_BALANCE) || defined(TJURM_HERO) || defined(TJURM_DRONSE)
             color_skip_flag = color_skip_flag || (armor.color == Data::self_color);
             color_skip_flag = color_skip_flag || (armor.color == rm::ARMOR_COLOR_NONE);
-            #endif
-            
-            //end at here
-            //DEBUG deactivated color select <- TODO REMOVE OR CHANGE LOGIC
-            if (Data::auto_enemy && color_skip_flag && false) {      
-                if (Data::point_skip_flag) rm::message("Color is on our part", rm::MSG_NOTE);
-                if (Data::image_flag && Data::ui_flag) {
+#endif
+
+            // end at here
+            // DEBUG deactivated color select <- TODO REMOVE OR CHANGE LOGIC
+            if (Data::auto_enemy && color_skip_flag && false)
+            {
+                if (Data::point_skip_flag)
+                    rm::message("Color is on our part", rm::MSG_NOTE);
+                if (Data::image_flag && Data::ui_flag)
+                {
                     rm::displaySingleArmorClass(*(frame->image), armor);
                     rm::displaySingleArmorRect(*(frame->image), armor);
                 }
-                std::cout << "auto enemy" << color_skip_flag << std::endl;  //debug
+                std::cout << "auto enemy" << color_skip_flag << std::endl; // debug
                 continue;
             }
-            
+
             rm::setArmorFourPoints(
-                armor, 
+                armor,
                 findPointPairBarycenter(best_pair.first, gray, point_line_dist, point_radius_ratio),
-                findPointPairBarycenter(best_pair.second, gray, point_line_dist, point_radius_ratio)
-            );
+                findPointPairBarycenter(best_pair.second, gray, point_line_dist, point_radius_ratio));
 
-            if (rm::isLightBarAreaPercentValid(armor, armor_min_area_percent)) {
-                if (Data::point_skip_flag) rm::message("Area percent is invalid", rm::MSG_NOTE);
-                if (Data::image_flag && Data::ui_flag) {
+            if (rm::isLightBarAreaPercentValid(armor, armor_min_area_percent))
+            {
+                if (Data::point_skip_flag)
+                    rm::message("Area percent is invalid", rm::MSG_NOTE);
+                if (Data::image_flag && Data::ui_flag)
+                {
                     rm::displaySingleArmorClass(*(frame->image), armor);
                     rm::displaySingleArmorRect(*(frame->image), armor);
                 }
                 continue;
             }
 
-            if(armor.four_points.size() != 4) {
-                if (Data::point_skip_flag) rm::message("No four points found", rm::MSG_NOTE);
-                if (Data::image_flag && Data::ui_flag) {
+            if (armor.four_points.size() != 4)
+            {
+                if (Data::point_skip_flag)
+                    rm::message("No four points found", rm::MSG_NOTE);
+                if (Data::image_flag && Data::ui_flag)
+                {
                     rm::displaySingleArmorClass(*(frame->image), armor);
                     rm::displaySingleArmorRect(*(frame->image), armor);
                 }
@@ -243,18 +265,20 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
         }
         // debug 四点查询
         // TODO 查看elevation是在哪边被赋值的，yolo里没有给elevation赋值
-        //（以及elevation是什么）
+        // （以及elevation是什么）
         // elevation似乎是在yaw pnp里算的，这里不用管
-        if(false)
+        if (false)
         {
             std::cout << "4pts size:" << armor.four_points.size() << std::endl;
-            if(armor.four_points.size() >0 ){
+            if (armor.four_points.size() > 0)
+            {
                 std::cout << armor.four_points[0] << std::endl;
             }
-            if(frame->yolo_list.size()>0)
+            if (frame->yolo_list.size() > 0)
             {
                 std::cout << "yolo 4pts size:" << frame->yolo_list[0].four_points.size() << std::endl;
-                if(frame->yolo_list[0].four_points.size() >0){
+                if (frame->yolo_list[0].four_points.size() > 0)
+                {
                     std::cout << frame->yolo_list[0].four_points[0] << std::endl;
                 }
             }
@@ -277,32 +301,39 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame) {
         // #endif
 
         frame->armor_list.push_back(armor);
-        
 
-        if (Data::image_flag && Data::ui_flag) {
+        if (Data::image_flag && Data::ui_flag)
+        {
             rm::displaySingleArmorClass(*(frame->image), armor);
             rm::displaySingleArmorRect(*(frame->image), armor);
         }
-        
-        if (Data::image_flag && Data::reprojection_flag && Data::ui_flag) {
-            if(armor.color == rm::ARMOR_COLOR_RED) {
+
+        if (Data::image_flag && Data::reprojection_flag && Data::ui_flag)
+        {
+            if (armor.color == rm::ARMOR_COLOR_RED)
+            {
                 rm::paramReprojection(small_red_width, small_red_height, big_red_width, big_red_height);
                 rm::setReprojection(*(frame->image), *(frame->image), armor.four_points, armor.size);
-            } else if (armor.color == rm::ARMOR_COLOR_BLUE) {
+            }
+            else if (armor.color == rm::ARMOR_COLOR_BLUE)
+            {
                 rm::paramReprojection(small_blue_width, small_blue_height, big_blue_width, big_blue_height);
                 rm::setReprojection(*(frame->image), *(frame->image), armor.four_points, armor.size);
             }
-            
-        } else if (Data::image_flag && Data::ui_flag) {
+        }
+        else if (Data::image_flag && Data::ui_flag)
+        {
             rm::displaySingleArmorLine(*(frame->image), armor);
         }
-        
     }
 
-    if (frame->armor_list.size() == 0) {
-        if (Data::point_skip_flag) rm::message("No armor found", rm::MSG_NOTE);
-        
-        if (Data::image_flag) imshow(frame);
+    if (frame->armor_list.size() == 0)
+    {
+        if (Data::point_skip_flag)
+            rm::message("No armor found", rm::MSG_NOTE);
+
+        if (Data::image_flag)
+            imshow(frame);
         return false;
     }
     return true;
