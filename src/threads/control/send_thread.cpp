@@ -215,8 +215,8 @@ void Control::send_thread() {
 
         // 迭代法求解击打 yaw, pitch
 
-        // auto objptr = garage->getObj(Data::target_id);
-        auto objptr = garage->getObj(ARMOR_ID_INFANTRY_3);
+        auto objptr = garage->getObj(Data::target_id);
+        // auto objptr = garage->getObj(ARMOR_ID_INFANTRY_3);
         // std::cout << "target_id control" << Data::target_id << std::endl;
         objptr->getTarget(pose, 0.0, 0.0, 0.0);
         /*DEBUG estimated pose report rate*/
