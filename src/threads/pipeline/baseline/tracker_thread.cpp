@@ -107,12 +107,16 @@ void Pipeline::tracker_baseline_thread(
             printf("---------------------\n");
             printf("tracker fps = %f\n", 1000 / timer.read());
             printf("calculate time = %f ms \n", timer1.read());
+            if (frame->target_list.size() > 0)
+            {
+                std::cout << "target[0]" << frame->target_list[0].pose_world << std::endl;
+            }
         }
         if (frame->target_list.size() > 0)
         {
-            std::cout << "target[0]" << frame->target_list[0].pose_world << std::endl;
             get_frame = true;
         }
+
         timer.begin();
     }
 }

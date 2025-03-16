@@ -7,7 +7,7 @@ model_path_xml: "/etc/openrm/models/RMyolov7-best-fp32/rmyolo-v7-best.xml"
 model_path_bin: "/etc/openrm/models/RMyolov7-best-fp32/rmyolo-v7-best.bin"
 
 
-conf_threshold: 0.35
+conf_threshold: 0.55
 rect_cut: 0
 boardSize_h: 7
 boardSize_w: 9
@@ -16,8 +16,8 @@ img_count: 60
 sample_period: 20
 calib_yaml_path: "/etc/openrm/forward_config/camera_intrinsics.yaml"
 camera_extrinsics_path: "/etc/openrm/forward_config/camera_extrinsics.yaml"
-cam_gain: 15.2
-cam_exptime: 4000
+cam_gain: 16.0
+cam_exptime: 6000
 framerate: 120
 imshow_en: 1
 debug_info: 1

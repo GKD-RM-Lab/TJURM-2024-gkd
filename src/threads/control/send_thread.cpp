@@ -235,7 +235,7 @@ void Control::send_thread() {
         }
         
         for(int i = 0; i < iteration_num; i++) {
-            fly_delay = getFlyDelay(target_yaw, target_pitch, shoot_speed, pose(0, 0), pose(1, 0), pose(2, 0));
+            fly_delay = getFlyDelay(target_yaw, target_pitch, shoot_speed, pose(0, 0) / 1000, pose(1, 0) / 1000, pose(2, 0) / 1000);
             fire = objptr->getTarget(pose, fly_delay, rotate_delay, shoot_delay);
         }
         rm::message("target pitch b", target_pitch);
@@ -286,12 +286,16 @@ void Control::send_thread() {
         
         // target_yaw *= (std::min(0.5, 9. * (fabs(target_yaw))));
         if (get_frame.exchange(false)) {    //sync 
-            printf("run here \n");
             // if (abs(target_yaw - last_target_yaw) < 0.2)
             {
-                send_control(socket_interface.pkg.yaw - target_yaw, socket_interface.pkg.pitch + target_pitch);
-                std::cout << "pose\n" << pose << std::endl;
-                std::cout << "\nyaw: " << socket_interface.pkg.yaw - target_yaw << "\npitch: " << socket_interface.pkg.pitch + target_pitch << std::endl;
+                send_control(socket_interface.pkg.yaw + target_yaw, socket_interface.pkg.pitch - target_pitch);
+                
+                std::cout << "pitch div" << target_pitch << std::endl;
+
+                // std::cout << "pitch set\t" << socket_interface.pkg.pitch - target_pitch << "\tcurrent pitch\t" << socket_interface.pkg.pitch << std::endl;
+                
+                // std::cout << "pose\n" << pose << std::endl;
+                // std::cout << "\nyaw: " << socket_interface.pkg.yaw - target_yaw << "\npitch: " << socket_interface.pkg.pitch + target_pitch << std::endl;
                 last_target_yaw = target_yaw;
             }
             // send_control(socket_interface.pkg.yaw - target_yaw, socket_interface.pkg.pitch + target_pitch);

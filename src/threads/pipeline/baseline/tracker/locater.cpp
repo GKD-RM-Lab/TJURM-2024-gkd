@@ -137,7 +137,7 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
                 rotate_head2world, trans_head2world, armor.id, plus_pnp_cost_image);
             target.pose_world = pose_world;
             /*debug*/
-            if(true)
+            if(false)
             {
                 std::cout << "pnp_in" << std::endl;
                 std::cout << "frame->yaw" << frame->yaw << std::endl;
