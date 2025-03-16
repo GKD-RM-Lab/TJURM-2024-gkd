@@ -103,7 +103,7 @@ void Pipeline::tracker_baseline_thread(
 
         /*debug*/
         timer.end();
-        if (1)
+        if (false)
         {
             printf("---------------------\n");
             printf("tracker fps = %f\n", 1000 / timer.read());

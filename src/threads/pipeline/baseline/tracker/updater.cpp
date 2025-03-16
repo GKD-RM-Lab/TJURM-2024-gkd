@@ -41,6 +41,9 @@ bool Pipeline::updater(std::shared_ptr<rm::Frame> frame)
 
         objptr->push(target, frame->time_point);
 
+        auto now = frame->time_point;
+        // std::cout << "frame time point:" << std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count() << std::endl;
+
         // std::cout << "target_id vision" << armor_id << std::endl;
 
         double angle = rm::getAngleOffsetTargetToReferee(

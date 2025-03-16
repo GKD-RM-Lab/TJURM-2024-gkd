@@ -87,6 +87,9 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
     // trans_pnp2head = camera->Trans_pnp2head;
     rm::tf_trans_head2world(trans_head2world, frame->yaw, frame->pitch, frame->roll);
 
+    //!DEBUG LOG
+    //NOT YAW PITCH ROLL INCOME, ERROR FOR ABS POSE
+
 
     for(auto& armor : frame->armor_list) {
         if(armor.four_points.size() != 4) { 
@@ -129,7 +132,7 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
                 rotate_head2world, trans_head2world, armor.id, plus_pnp_cost_image);
             target.pose_world = pose_world;
             /*debug*/
-            if(false)
+            if(true)
             {
                 std::cout << "pnp_in" << std::endl;
                 std::cout << "frame->yaw" << frame->yaw << std::endl;
@@ -144,6 +147,9 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
                 std::cout << "plus_pnp_cost_image" << plus_pnp_cost_image << std::endl;
                 std::cout << "pnp_out" << std::endl;
                 std::cout << "pose_world" << pose_world << std::endl;
+                std::cout << "frame_yaw" << frame->yaw << std::endl;
+                std::cout << "frame_pitch" << frame->pitch << std::endl;
+                std::cout << "frame_roll" << frame->roll << std::endl;
                 std::cout << "----------------------------------------------" << std::endl;
             }
         } else {
