@@ -3,8 +3,8 @@
 # model_path_xml: "/etc/openrm/models/RMyolo-v7-new/RMyolov7-new.xml"
 # model_path_bin: "/etc/openrm/models/RMyolo-v7-new/RMyolov7-new.bin"
 
-model_path_xml: "/etc/openrm/models/RMyolov7-best-fp32/rmyolo-v7-best.xml"
-model_path_bin: "/etc/openrm/models/RMyolov7-best-fp32/rmyolo-v7-best.bin"
+model_path_xml: "/etc/openrm/models/Rmyolo-v7-latest/rmyolov7-latest.xml"
+model_path_bin: "/etc/openrm/models/Rmyolo-v7-latest/rmyolov7-latest.bin"
 
 
 conf_threshold: 0.55
@@ -17,7 +17,7 @@ sample_period: 20
 calib_yaml_path: "/etc/openrm/forward_config/camera_intrinsics.yaml"
 camera_extrinsics_path: "/etc/openrm/forward_config/camera_extrinsics.yaml"
 cam_gain: 16.0
-cam_exptime: 6000
+cam_exptime: 12000
 framerate: 120
 imshow_en: 1
 debug_info: 1

@@ -216,11 +216,9 @@ void Control::send_thread() {
         // 迭代法求解击打 yaw, pitch
 
         auto objptr = garage->getObj(Data::target_id);
-        // auto objptr = garage->getObj(ARMOR_ID_INFANTRY_3);
-        // std::cout << "target_id control" << Data::target_id << std::endl;
         objptr->getTarget(pose, 0.0, 0.0, 0.0);
-        /*DEBUG estimated pose report rate*/
-        // printf("address 2 0x%x\n",objptr.get());
+        // std::cout << "target_id control" << Data::target_id << std::endl;
+        // std::cout << "pose" << pose << std::endl;
         if(false)
         {
             timer1.end();
@@ -233,7 +231,10 @@ void Control::send_thread() {
             // send_control(socket_interface.pkg.yaw, target_pitch);
             // continue;
         }
-        
+
+        shoot_speed = 26.7;
+        // shoot_speed = 100;
+
         for(int i = 0; i < iteration_num; i++) {
             fly_delay = getFlyDelay(target_yaw, target_pitch, shoot_speed, pose(0, 0) / 1000, pose(1, 0) / 1000, pose(2, 0) / 1000);
             fire = objptr->getTarget(pose, fly_delay, rotate_delay, shoot_delay);
@@ -290,7 +291,7 @@ void Control::send_thread() {
             {
                 send_control(socket_interface.pkg.yaw + target_yaw, socket_interface.pkg.pitch - target_pitch);
                 
-                std::cout << "pitch div" << target_pitch << std::endl;
+                std::cout << "pitch div" << target_pitch << "\tpitch imui" << socket_interface.pkg.pitch << std::endl;
 
                 // std::cout << "pitch set\t" << socket_interface.pkg.pitch - target_pitch << "\tcurrent pitch\t" << socket_interface.pkg.pitch << std::endl;
                 

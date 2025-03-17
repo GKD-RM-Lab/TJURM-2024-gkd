@@ -108,14 +108,14 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame)
         setArmorExtendRectIOU(armor, yolo_rect.box, frame->width, frame->height, roi_extend_w, roi_extend_h);
         armor.size = ARMOR_SIZE_SMALL_ARMOR;
         setArmorRectCenter(armor);
-
-#if defined(TJURM_INFANTRY) || defined(TJURM_BALANCE) || defined(TJURM_HERO)
+        
+        #if defined(TJURM_INFANTRY) || defined(TJURM_BALANCE) || defined(TJURM_HERO)
         if ((Data::state == 1) && (armor.id != rm::ARMOR_ID_TOWER))
-            continue;
-#endif
-
+        // continue;
+        #endif
+        
         if (!isRectValidInImage(*frame->image, armor.rect))
-            continue;
+        continue;
         cv::Mat roi = (*frame->image)(armor.rect);
 
         cv::Mat gray, binary;
@@ -174,7 +174,7 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame)
 
         // 当yolo识别出完整四点时，不使用传统算法识别四点
         // DEBUG deactive yolo 4 points <- TODO CHECK
-        if (yolo_rect.four_points.size() == 4) // debug
+        if (yolo_rect.four_points.size() == 4 && false) // debug
         {
             // 移植四点数据
             armor.four_points = yolo_rect.four_points;
@@ -209,15 +209,15 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame)
 
             bool color_skip_flag = false;
 
-#ifdef TJURM_SENTRY
+            #ifdef TJURM_SENTRY
             color_skip_flag = color_skip_flag || !rm::isArmorColorEnemy(roi, best_pair, Data::enemy_color, enemy_split);
             color_skip_flag = color_skip_flag || (armor.color != Data::enemy_color);
-#endif
+            #endif
 
-#if defined(TJURM_INFANTRY) || defined(TJURM_BALANCE) || defined(TJURM_HERO) || defined(TJURM_DRONSE)
+            #if defined(TJURM_INFANTRY) || defined(TJURM_BALANCE) || defined(TJURM_HERO) || defined(TJURM_DRONSE)
             color_skip_flag = color_skip_flag || (armor.color == Data::self_color);
             color_skip_flag = color_skip_flag || (armor.color == rm::ARMOR_COLOR_NONE);
-#endif
+            #endif
 
             // end at here
             // DEBUG deactivated color select <- TODO REMOVE OR CHANGE LOGIC
@@ -263,6 +263,8 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame)
                 continue;
             }
         }
+
+
         // debug 四点查询
         // TODO 查看elevation是在哪边被赋值的，yolo里没有给elevation赋值
         // （以及elevation是什么）
