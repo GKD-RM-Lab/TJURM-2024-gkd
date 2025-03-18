@@ -171,7 +171,7 @@ void Control::send_thread() {
     auto pipeline = Pipeline::get_instance();
     static double last_target_yaw = 0;
     init_send();
-    Timer timer, timer1;    //debug timer
+    Timer timer, timer1, timer2;    //debug timer
 
 
     std::mutex mutex;
@@ -216,6 +216,7 @@ void Control::send_thread() {
         // 迭代法求解击打 yaw, pitch
 
         auto objptr = garage->getObj(Data::target_id);
+        // auto objptr = garage->getObj(ARMOR_ID_INFANTRY_3);  //debug armor id
         objptr->getTarget(pose, 0.0, 0.0, 0.0);
         // std::cout << "target_id control" << Data::target_id << std::endl;
         // std::cout << "pose" << pose << std::endl;
@@ -291,8 +292,9 @@ void Control::send_thread() {
             {
                 send_control(socket_interface.pkg.yaw + target_yaw, socket_interface.pkg.pitch - target_pitch);
                 
-                std::cout << "pitch div" << target_pitch << "\tpitch imui" << socket_interface.pkg.pitch << std::endl;
-
+                timer2.end();
+                std::cout << "pitch div" << target_pitch << "\tpitch imui" << socket_interface.pkg.pitch << "\tfps" << 1000/timer2.read() << std::endl;
+                timer2.begin();
                 // std::cout << "pitch set\t" << socket_interface.pkg.pitch - target_pitch << "\tcurrent pitch\t" << socket_interface.pkg.pitch << std::endl;
                 
                 // std::cout << "pose\n" << pose << std::endl;
