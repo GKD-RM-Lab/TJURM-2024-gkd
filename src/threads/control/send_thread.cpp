@@ -214,13 +214,10 @@ void Control::send_thread() {
         }
 
         // 迭代法求解击打 yaw, pitch
-
         auto objptr = garage->getObj(Data::target_id);
-        // auto objptr = garage->getObj(ARMOR_ID_INFANTRY_3);  //debug armor id
         objptr->getTarget(pose, 0.0, 0.0, 0.0);
-        // std::cout << "target_id control" << Data::target_id << std::endl;
-        // std::cout << "pose" << pose << std::endl;
-        if(true)
+
+        if(false)
         {
             timer1.end();
             std::cout << "pose\n" << pose << std::endl;
@@ -234,7 +231,6 @@ void Control::send_thread() {
         }
 
         shoot_speed = 26.7;
-        // shoot_speed = 100;
 
         for(int i = 0; i < iteration_num; i++) {
             fly_delay = getFlyDelay(target_yaw, target_pitch, shoot_speed, pose(0, 0), pose(1, 0), pose(2, 0));
@@ -273,46 +269,17 @@ void Control::send_thread() {
 
         fire = (fire && start_delay_flag && autoaim_flag && Data::auto_fire);
         
-        /*potimize debug info*/
-        // timer.end();
-        // printf("control update period = %f\n", timer.read());    //~10ms
-        // timer.begin();
-
-        //debug 暂时关闭串口
-        // send_single(target_yaw, target_pitch, fire, Data::target_id);
-        // constexpr double DELTA = 0.05;
-        // std::clamp(target_yaw, -DELTA, DELTA);
-        //target_yaw *= 0.5;
-        //target_pitch *= 0.2;
-        // printf("send control\n");
-        
-        // target_yaw *= (std::min(0.5, 9. * (fabs(target_yaw))));
         if (get_frame.exchange(false)) {    //sync 
-            // if (abs(target_yaw - last_target_yaw) < 0.2)
             {
-                send_control(socket_interface.pkg.yaw + target_yaw, socket_interface.pkg.pitch - target_pitch);
-                
+                send_control(socket_interface.pkg.yaw + target_yaw, socket_interface.pkg.pitch - target_pitch);                
                 timer2.end();
-                // std::cout << "pitch div" << target_pitch << "\tpitch imui" << socket_interface.pkg.pitch << "\tfps" << 1000/timer2.read() << std::endl;
+                std::cout << "pitch div" << target_pitch << "\tpitch imui" << socket_interface.pkg.pitch << "\tfps" << 1000/timer2.read() << std::endl;
                 timer2.begin();
-                // std::cout << "pitch set\t" << socket_interface.pkg.pitch - target_pitch << "\tcurrent pitch\t" << socket_interface.pkg.pitch << std::endl;
-                
-                // std::cout << "pose\n" << pose << std::endl;
-                // std::cout << "\nyaw: " << socket_interface.pkg.yaw - target_yaw << "\npitch: " << socket_interface.pkg.pitch + target_pitch << std::endl;
-                last_target_yaw = target_yaw;
             }
-            // send_control(socket_interface.pkg.yaw - target_yaw, socket_interface.pkg.pitch + target_pitch);
-            //     std::cout << "\nyaw: " << socket_interface.pkg.yaw - target_yaw << "\npitch: " << socket_interface.pkg.pitch + target_pitch << std::endl;
-            //     last_target_yaw = target_yaw;
+
             count = 0;
             
         }
         count ++;
-        // std::this_thread::sleep_for(std::chrono::milliseconds(200));
-        
-        // printf("cur yaw:%.3f\ttarget yaw:%.3f\n", socket_interface.pkg.yaw, socket_interface.pkg.yaw + target_yaw);
-        // printf("cur pitch:%.3f\ttarget pith:%.3f\n", socket_interface.pkg.pitch, socket_interface.pkg.pitch+ target_pitch);
-        // std::cout << "target_yaw" << target_yaw << std::endl;
-        // std::cout << "target_pitch" << target_pitch << std::endl;
     }
 }
