@@ -18,7 +18,7 @@ static int iteration_num;
 static double base_to_far_dist, far_to_base_dist;
 
 static bool fire = false;
-static double target_yaw, target_pitch, fly_delay, delay;
+static double target_yaw, target_pitch, fly_delay, delay, fly_delay_d;
 static double rotate_delay, rotate_delay_outpost, rotate_delay_rune;
 static Eigen::Vector4d pose;
 
@@ -190,32 +190,32 @@ void Control::send_thread() {
         this->shootspeed();         // 英雄弹速寄存器
 
         // 根据目标id判断是否需要自瞄
-        if(Data::target_id == rm::ARMOR_ID_UNKNOWN) {
-            #if defined(TJURM_INFANTRY) || defined(TJURM_BALANCE) || defined(TJURM_DRONSE)
-            continue;
-            #endif
+        // if(Data::target_id == rm::ARMOR_ID_UNKNOWN) {
+        //     #if defined(TJURM_INFANTRY) || defined(TJURM_BALANCE) || defined(TJURM_DRONSE)
+        //     continue;
+        //     #endif
 
-            #ifdef TJURM_HERO
-            send_single(get_yaw(), get_pitch(), false);
-            continue;
-            #endif
+        //     #ifdef TJURM_HERO
+        //     send_single(get_yaw(), get_pitch(), false);
+        //     continue;
+        //     #endif
 
-            #ifdef TJURM_SENTRY
-            float camsense_x = this->state_bytes_.input_data.target_pose[0];
-            float camsense_y = this->state_bytes_.input_data.target_pose[1];
-            float camsense_z = this->state_bytes_.input_data.target_pose[2];
-            if(abs(camsense_x) < 1e-2 && abs(camsense_y) < 1e-2) continue;
+        //     #ifdef TJURM_SENTRY
+        //     float camsense_x = this->state_bytes_.input_data.target_pose[0];
+        //     float camsense_y = this->state_bytes_.input_data.target_pose[1];
+        //     float camsense_z = this->state_bytes_.input_data.target_pose[2];
+        //     if(abs(camsense_x) < 1e-2 && abs(camsense_y) < 1e-2) continue;
 
-            getFlyDelay(target_yaw, target_pitch, shoot_speed, camsense_x, camsense_y, camsense_z);
-            send_single(target_yaw, target_pitch, false);
-            continue;
+        //     getFlyDelay(target_yaw, target_pitch, shoot_speed, camsense_x, camsense_y, camsense_z);
+        //     send_single(target_yaw, target_pitch, false);
+        //     continue;
 
-            #endif
-        }
+        //     #endif
+        // }
 
         // 迭代法求解击打 yaw, pitch
 
-        auto objptr = garage->getObj(Data::target_id);
+        auto objptr = garage->getObj(Data::target_id);  //some times mm, some times m????????????????
         // auto objptr = garage->getObj(ARMOR_ID_INFANTRY_3);  //debug armor id
         objptr->getTarget(pose, 0.0, 0.0, 0.0);
         // std::cout << "target_id control" << Data::target_id << std::endl;
@@ -232,43 +232,59 @@ void Control::send_thread() {
             timer1.begin();
         }
             
-        if (fabs(pose(0, 0) + pose(1, 0) + pose(2, 0)) < 1e-3) {
-            // send_control(socket_interface.pkg.yaw, target_pitch);
-            // continue;
-        }
-
+        
         shoot_speed = 26.7;
+        
+        if(abs(pose(1, 0)) > 2.0) continue;
 
-        for(int i = 0; i < iteration_num; i++) {
+        for(int i = 0; i < 10; i++) {
             fly_delay = getFlyDelay(target_yaw, target_pitch, shoot_speed, pose(0, 0), pose(1, 0), pose(2, 0));
             fire = objptr->getTarget(pose, fly_delay, rotate_delay, shoot_delay);
+            
+            if(false)
+            {
+                std::cout << "<--- IN ---" << std::endl;
+                std::cout << "shoot_speed" << shoot_speed << std::endl;
+                std::cout << "pose_x" << pose(0, 0) << std::endl;
+                std::cout << "pose_y" << pose(1, 0) << std::endl;
+                std::cout << "pose_z" << pose(2, 0) << std::endl;
+                std::cout << "--- OUT --->" << std::endl;
+                std::cout << "fly_delay" << fly_delay << "\n\n\n\n\n" << std::endl;
+            }
         }
+        fly_delay = 0;
+
+        if (fabs(pose(0, 0) + pose(1, 0) + pose(2, 0)) < 1e-3) {
+            send_control(socket_interface.pkg.yaw, target_pitch);
+            continue;
+        }
+
         rm::message("target pitch b", target_pitch);
         Data::target_dist = sqrt(pow(pose(0, 0), 2) + pow(pose(1, 0), 2) + pow(pose(2, 0), 2));
         
         // 如果返回坐标为0, 确定控制信号
-        if ((std::abs(pose[0]) < 1e-2) && (std::abs(pose[1]) < 1e-2)) {
-            #if defined(TJURM_INFANTRY) || defined(TJURM_BALANCE) || defined(TJURM_DRONSE)
-            continue;
-            #endif
+        // if ((std::abs(pose[0]) < 1e-2) && (std::abs(pose[1]) < 1e-2)) {
+        //     #if defined(TJURM_INFANTRY) || defined(TJURM_BALANCE) || defined(TJURM_DRONSE)
+        //     continue;
+        //     #endif
 
-            #ifdef TJURM_HERO
-            send_single(get_yaw(), get_pitch(), false);
-            continue;
-            #endif
+        //     #ifdef TJURM_HERO
+        //     send_single(get_yaw(), get_pitch(), false);
+        //     continue;
+        //     #endif
 
-            #ifdef TJURM_SENTRY
-            float camsense_x = this->state_bytes_.input_data.target_pose[0];
-            float camsense_y = this->state_bytes_.input_data.target_pose[1];
-            float camsense_z = this->state_bytes_.input_data.target_pose[2];
-            if(abs(camsense_x) < 1e-2 && abs(camsense_y) < 1e-2) continue;
+        //     #ifdef TJURM_SENTRY
+        //     float camsense_x = this->state_bytes_.input_data.target_pose[0];
+        //     float camsense_y = this->state_bytes_.input_data.target_pose[1];
+        //     float camsense_z = this->state_bytes_.input_data.target_pose[2];
+        //     if(abs(camsense_x) < 1e-2 && abs(camsense_y) < 1e-2) continue;
 
-            getFlyDelay(target_yaw, target_pitch, shoot_speed, camsense_x, camsense_y, camsense_z);
-            send_single(target_yaw, target_pitch, false);
-            continue;
+        //     getFlyDelay(target_yaw, target_pitch, shoot_speed, camsense_x, camsense_y, camsense_z);
+        //     send_single(target_yaw, target_pitch, false);
+        //     continue;
 
-            #endif
-        }
+        //     #endif
+        // }
 
         // 控制发弹
         bool start_delay_flag = (getDoubleOfS(start_autoaim, getTime()) > start_fire_delay);
@@ -293,7 +309,7 @@ void Control::send_thread() {
         if (get_frame.exchange(false)) {    //sync 
             // if (abs(target_yaw - last_target_yaw) < 0.2)
             {
-                send_control(socket_interface.pkg.yaw + target_yaw, socket_interface.pkg.pitch - target_pitch);
+                // send_control(socket_interface.pkg.yaw + target_yaw, socket_interface.pkg.pitch - target_pitch);
                 
                 timer2.end();
                 // std::cout << "pitch div" << target_pitch << "\tpitch imui" << socket_interface.pkg.pitch << "\tfps" << 1000/timer2.read() << std::endl;
