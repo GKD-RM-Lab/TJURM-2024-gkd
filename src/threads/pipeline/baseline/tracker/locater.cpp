@@ -198,7 +198,7 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
             pose_world = trans_head2world * trans_pnp2head * pose_pnp;
             target.pose_world = pose_world;
         }
-        
+          
         frame->target_list.push_back(target);
 
         double distance = sqrt(pow(target.pose_world(0), 2) + pow(target.pose_world(1), 2) + pow(target.pose_world(2), 2));

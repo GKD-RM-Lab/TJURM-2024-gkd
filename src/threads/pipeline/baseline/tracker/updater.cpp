@@ -29,12 +29,12 @@ bool Pipeline::updater(std::shared_ptr<rm::Frame> frame)
         // ObjPtr objptr = garage->getObj(ARMOR_ID_INFANTRY_3);
         
 
-        // double pose0 = target.pose_world[2];
-        // double pose1 = -target.pose_world[0];
-        // double pose2 = -target.pose_world[1];
-        // target.pose_world[0] = pose0;
-        // target.pose_world[1] = pose1;
-        // target.pose_world[2] = pose2;
+        double pose0 = target.pose_world[0];
+        double pose1 = target.pose_world[1];
+        double pose2 = target.pose_world[2];
+        target.pose_world[0] = pose0 / 1;
+        target.pose_world[1] = pose1 / 1;
+        target.pose_world[2] = pose2 / 1;
         if (temp >= 1)
         {
             // std::cout << "\npose0: " << pose0 << "\npose1: " << pose1 << "\npose2: " << pose2 << std::endl;
@@ -48,11 +48,15 @@ bool Pipeline::updater(std::shared_ptr<rm::Frame> frame)
 
         // std::cout << "target_id vision" << armor_id << std::endl;
 
+        // ?
         double angle = rm::getAngleOffsetTargetToReferee(
             control->get_yaw(), control->get_pitch(),
             target.pose_world(0, 0), target.pose_world(1, 0), target.pose_world(2, 0),
             referee_offset[0], referee_offset[1], referee_offset[2], referee_offset[3], referee_offset[4],
             axis_offset[0], axis_offset[1], axis_offset[2]);
+        
+        // std::cout << "armor_id" << armor_id << std::endl;
+        // std::cout << "angle" << angle << std::endl;
 
         Data::attack->push(armor_id, angle, frame->time_point);
     }

@@ -220,11 +220,15 @@ void Control::send_thread() {
         objptr->getTarget(pose, 0.0, 0.0, 0.0);
         // std::cout << "target_id control" << Data::target_id << std::endl;
         // std::cout << "pose" << pose << std::endl;
-        if(false)
+        if(true)
         {
             timer1.end();
-            std::cout << "pose\n" << pose << std::endl;
-            std::cout << "time used = " << timer1.read() << std::endl;
+            // std::cout << "pose\n" << pose << std::endl;
+            std::cout << pose(0, 0) << std::endl;
+            std::cout << pose(1, 0) << std::endl;
+            std::cout << pose(2, 0) << std::endl;
+            std::cout << "----------------------------" << std::endl;
+            // std::cout << "time used = " << timer1.read() << std::endl;
             timer1.begin();
         }
             
@@ -234,10 +238,9 @@ void Control::send_thread() {
         }
 
         shoot_speed = 26.7;
-        // shoot_speed = 100;
 
         for(int i = 0; i < iteration_num; i++) {
-            fly_delay = getFlyDelay(target_yaw, target_pitch, shoot_speed, pose(0, 0) / 1000, pose(1, 0) / 1000, pose(2, 0) / 1000);
+            fly_delay = getFlyDelay(target_yaw, target_pitch, shoot_speed, pose(0, 0), pose(1, 0), pose(2, 0));
             fire = objptr->getTarget(pose, fly_delay, rotate_delay, shoot_delay);
         }
         rm::message("target pitch b", target_pitch);
@@ -293,7 +296,7 @@ void Control::send_thread() {
                 send_control(socket_interface.pkg.yaw + target_yaw, socket_interface.pkg.pitch - target_pitch);
                 
                 timer2.end();
-                std::cout << "pitch div" << target_pitch << "\tpitch imui" << socket_interface.pkg.pitch << "\tfps" << 1000/timer2.read() << std::endl;
+                // std::cout << "pitch div" << target_pitch << "\tpitch imui" << socket_interface.pkg.pitch << "\tfps" << 1000/timer2.read() << std::endl;
                 timer2.begin();
                 // std::cout << "pitch set\t" << socket_interface.pkg.pitch - target_pitch << "\tcurrent pitch\t" << socket_interface.pkg.pitch << std::endl;
                 
