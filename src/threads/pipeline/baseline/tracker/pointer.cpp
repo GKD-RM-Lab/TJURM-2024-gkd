@@ -127,7 +127,7 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame)
         threshold_from_hist = std::clamp(threshold_from_hist, 10, 100);
         rm::getBinary(gray, binary, threshold_from_hist, rm::BINARY_METHOD_DIRECT_THRESHOLD);
 
-        if (Data::image_flag && Data::binary_flag || true)
+        if (Data::image_flag && Data::binary_flag )
         { // debug
             cv::imshow("gray", gray);
             cv::imshow("binary", binary);
@@ -220,7 +220,8 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame)
             #endif
 
             // end at here
-            // DEBUG deactivated color select <- TODO REMOVE OR CHANGE LOGIC
+            // GKDTODO 在这里需要增加识别敌方颜色的逻辑
+            // 需要从电控读取
             if (Data::auto_enemy && color_skip_flag && false)
             {
                 if (Data::point_skip_flag)

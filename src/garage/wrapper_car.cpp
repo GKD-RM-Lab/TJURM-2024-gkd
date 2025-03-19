@@ -143,7 +143,14 @@ bool WrapperCar::getTarget(Eigen::Vector4d& pose_rotate, const double fly_delay,
         rm::message("antitop armor", 4);
     }
 
-
+    //GKDTODO 这里getpose得到的pose_rotate是相对于世界坐标系的，需要把它转换为相对云台中心的坐标
+    //需要依靠yaw pitch的imu角反向旋转，然后输出到pose_rotate
+    //因为后续在send_thread调用读到的pose的时候，都会默认这是相对于枪管的坐标（暂时近似云台中心吧）
+    //这套自瞄似乎也是假设枪管就是跟云台中心重合的，没有对枪管做平移处理的地方
+    //右手系，从枪管后方看：
+    //x轴->前
+    //y轴->左
+    //z轴->上
     Eigen::Vector4d pose_shoot = track_queue_.getPose(fly_delay + shoot_delay);
     pose_rotate = track_queue_.getPose(fly_delay + rotate_delay);
 

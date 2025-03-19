@@ -217,7 +217,7 @@ void Control::send_thread() {
         auto objptr = garage->getObj(Data::target_id);
         objptr->getTarget(pose, 0.0, 0.0, 0.0);
 
-        if(true)
+        if(false)
         {
             timer1.end();
             // std::cout << "pose\n" << pose << std::endl;
@@ -282,10 +282,12 @@ void Control::send_thread() {
         // }
 
         // 控制发弹
+        // GKDTODO 接入到电控接口，可以设置发弹时机放每一发弹丸都精准落在小陀螺上（bushi
         bool start_delay_flag = (getDoubleOfS(start_autoaim, getTime()) > start_fire_delay);
         bool autoaim_flag = get_autoaim();
 
         fire = (fire && start_delay_flag && autoaim_flag && Data::auto_fire);
+        
         
         if (get_frame.exchange(false)) {    //sync 
             {

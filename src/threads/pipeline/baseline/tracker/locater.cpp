@@ -62,7 +62,7 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
     cv::Mat rvec, tvec, rotate_cv;
     std::vector<cv::Point3f> *Armor3D;
 
-    Eigen::Vector4d pose_pnp, pose_head, pose_world;
+    Eigen::Vector4d pose_pnp, pose_head, pose_world, pos_camera;
     Eigen::Matrix3d rotate_pnp, rotate_world;
     
     Eigen::Matrix3d rotate_pnp2head, rotate_head2world;
@@ -81,11 +81,6 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
 
     // rm::Camera* camera = Data::camera[frame->camera_id];
 
-    /*DEBUG 检查yaw pitch形式*/
-    frame->yaw = -frame->yaw;
-    frame->pitch = -frame->pitch;
-    // frame->yaw = 0;
-    // frame->pitch = 0;
     // rotate_pnp2head = camera->Rotate_pnp2head;
     rm::tf_rotate_head2world(rotate_head2world, frame->yaw, frame->pitch, frame->roll);
 
@@ -133,9 +128,14 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
             // new_four_points.push_back(armor.four_points[0]);
 
             target.armor_yaw_world = rm::solveYawPnP(
-                frame->yaw, intrinsic_matrix, distortion_coeffs, trans_pnp2head, rotate_pnp2head, pose_world, *Armor3D, armor.four_points, 
+                frame->yaw, intrinsic_matrix, distortion_coeffs, trans_pnp2head, rotate_pnp2head, pos_camera, *Armor3D, armor.four_points, 
                 rotate_head2world, trans_head2world, armor.id, plus_pnp_cost_image);
-            target.pose_world = pose_world;
+            //GKDTODO
+            //更改了solveYawPnP的逻辑，现在得到的结果是<相对于云台>的装甲板坐标
+            //在这里，需要把它转换为相对于世界的
+            //第一步需要转换为相对于云台中心的坐标
+            //第二步需要转换为相对于世界的坐标，通过yaw pitch roll旋转
+            target.pose_world = pos_camera;
             /*debug*/
             if(false)
             {
