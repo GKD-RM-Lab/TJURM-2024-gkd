@@ -217,7 +217,7 @@ void Control::send_thread() {
         auto objptr = garage->getObj(Data::target_id);
         objptr->getTarget(pose, 0.0, 0.0, 0.0);
 
-        if(false)
+        if(true)
         {
             timer1.end();
             std::cout << "pose\n" << pose << std::endl;
@@ -273,7 +273,7 @@ void Control::send_thread() {
             {
                 send_control(socket_interface.pkg.yaw + target_yaw, socket_interface.pkg.pitch - target_pitch);                
                 timer2.end();
-                std::cout << "pitch div" << target_pitch << "\tpitch imui" << socket_interface.pkg.pitch << "\tfps" << 1000/timer2.read() << std::endl;
+                // std::cout << "pitch div" << target_pitch << "\tpitch imui" << socket_interface.pkg.pitch << "\tfps" << 1000/timer2.read() << std::endl;
                 timer2.begin();
             }
 
