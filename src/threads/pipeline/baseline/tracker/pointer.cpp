@@ -127,7 +127,7 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame)
         threshold_from_hist = std::clamp(threshold_from_hist, 10, 100);
         rm::getBinary(gray, binary, threshold_from_hist, rm::BINARY_METHOD_DIRECT_THRESHOLD);
 
-        if (Data::image_flag && Data::binary_flag )
+        if (Data::image_flag && Data::binary_flag || true)
         { // debug
             cv::imshow("gray", gray);
             cv::imshow("binary", binary);

@@ -190,28 +190,28 @@ void Control::send_thread() {
         this->shootspeed();         // 英雄弹速寄存器
 
         // 根据目标id判断是否需要自瞄
-        // if(Data::target_id == rm::ARMOR_ID_UNKNOWN) {
-        //     #if defined(TJURM_INFANTRY) || defined(TJURM_BALANCE) || defined(TJURM_DRONSE)
-        //     continue;
-        //     #endif
+        if(Data::target_id == rm::ARMOR_ID_UNKNOWN) {
+            #if defined(TJURM_INFANTRY) || defined(TJURM_BALANCE) || defined(TJURM_DRONSE)
+            continue;
+            #endif
 
-        //     #ifdef TJURM_HERO
-        //     send_single(get_yaw(), get_pitch(), false);
-        //     continue;
-        //     #endif
+            #ifdef TJURM_HERO
+            send_single(get_yaw(), get_pitch(), false);
+            continue;
+            #endif
 
-        //     #ifdef TJURM_SENTRY
-        //     float camsense_x = this->state_bytes_.input_data.target_pose[0];
-        //     float camsense_y = this->state_bytes_.input_data.target_pose[1];
-        //     float camsense_z = this->state_bytes_.input_data.target_pose[2];
-        //     if(abs(camsense_x) < 1e-2 && abs(camsense_y) < 1e-2) continue;
+            #ifdef TJURM_SENTRY
+            float camsense_x = this->state_bytes_.input_data.target_pose[0];
+            float camsense_y = this->state_bytes_.input_data.target_pose[1];
+            float camsense_z = this->state_bytes_.input_data.target_pose[2];
+            if(abs(camsense_x) < 1e-2 && abs(camsense_y) < 1e-2) continue;
 
-        //     getFlyDelay(target_yaw, target_pitch, shoot_speed, camsense_x, camsense_y, camsense_z);
-        //     send_single(target_yaw, target_pitch, false);
-        //     continue;
+            getFlyDelay(target_yaw, target_pitch, shoot_speed, camsense_x, camsense_y, camsense_z);
+            send_single(target_yaw, target_pitch, false);
+            continue;
 
-        //     #endif
-        // }
+            #endif
+        }
 
         // 迭代法求解击打 yaw, pitch
         auto objptr = garage->getObj(Data::target_id);
@@ -247,6 +247,8 @@ void Control::send_thread() {
                 std::cout << "fly_delay" << fly_delay << "\n\n\n\n\n" << std::endl;
             }
         }
+        std::cout << "fire\t" << fire << std::endl;
+
         fly_delay = 0;
 
         if (fabs(pose(0, 0) + pose(1, 0) + pose(2, 0)) < 1e-3) {
@@ -258,35 +260,35 @@ void Control::send_thread() {
         Data::target_dist = sqrt(pow(pose(0, 0), 2) + pow(pose(1, 0), 2) + pow(pose(2, 0), 2));
         
         // 如果返回坐标为0, 确定控制信号
-        // if ((std::abs(pose[0]) < 1e-2) && (std::abs(pose[1]) < 1e-2)) {
-        //     #if defined(TJURM_INFANTRY) || defined(TJURM_BALANCE) || defined(TJURM_DRONSE)
-        //     continue;
-        //     #endif
+        if ((std::abs(pose[0]) < 1e-2) && (std::abs(pose[1]) < 1e-2)) {
+            #if defined(TJURM_INFANTRY) || defined(TJURM_BALANCE) || defined(TJURM_DRONSE)
+            continue;
+            #endif
 
-        //     #ifdef TJURM_HERO
-        //     send_single(get_yaw(), get_pitch(), false);
-        //     continue;
-        //     #endif
+            #ifdef TJURM_HERO
+            send_single(get_yaw(), get_pitch(), false);
+            continue;
+            #endif
 
-        //     #ifdef TJURM_SENTRY
-        //     float camsense_x = this->state_bytes_.input_data.target_pose[0];
-        //     float camsense_y = this->state_bytes_.input_data.target_pose[1];
-        //     float camsense_z = this->state_bytes_.input_data.target_pose[2];
-        //     if(abs(camsense_x) < 1e-2 && abs(camsense_y) < 1e-2) continue;
+            #ifdef TJURM_SENTRY
+            float camsense_x = this->state_bytes_.input_data.target_pose[0];
+            float camsense_y = this->state_bytes_.input_data.target_pose[1];
+            float camsense_z = this->state_bytes_.input_data.target_pose[2];
+            if(abs(camsense_x) < 1e-2 && abs(camsense_y) < 1e-2) continue;
 
-        //     getFlyDelay(target_yaw, target_pitch, shoot_speed, camsense_x, camsense_y, camsense_z);
-        //     send_single(target_yaw, target_pitch, false);
-        //     continue;
+            getFlyDelay(target_yaw, target_pitch, shoot_speed, camsense_x, camsense_y, camsense_z);
+            send_single(target_yaw, target_pitch, false);
+            continue;
 
-        //     #endif
-        // }
+            #endif
+        }
 
         // 控制发弹
         // GKDTODO 接入到电控接口，可以设置发弹时机放每一发弹丸都精准落在小陀螺上（bushi
         bool start_delay_flag = (getDoubleOfS(start_autoaim, getTime()) > start_fire_delay);
         bool autoaim_flag = get_autoaim();
 
-        fire = (fire && start_delay_flag && autoaim_flag && Data::auto_fire);
+        // fire = (fire && start_delay_flag && autoaim_flag && Data::auto_fire);
         
         
         if (get_frame.exchange(false)) {    //sync 

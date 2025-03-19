@@ -135,8 +135,21 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
             //在这里，需要把它转换为相对于世界的
             //第一步需要转换为相对于云台中心的坐标
             //第二步需要转换为相对于世界的坐标，通过yaw pitch roll旋转
-            target.pose_world = pos_camera;
-            /*debug*/
+            
+            
+            rm::tf_trans_head2world(trans_head2world, frame->yaw, -frame->pitch, 0.0);
+            target.pose_world = trans_head2world * trans_pnp2head * pos_camera;
+            
+            if(false)
+            {
+                std::cout << "pos camera \n" << pos_camera << std::endl;
+                std::cout << "pos gimbal? \n" << trans_pnp2head * pos_camera << std::endl;
+                std::cout << "rotate to world \n" << trans_head2world << std::endl;
+                std::cout << "pose to world? \n" << target.pose_world << std::endl;
+                std::cout << "yaw \t" << frame->yaw << std::endl;
+                std::cout << "pitch \t" << frame->pitch << std::endl;
+            }
+                /*debug*/
             if(false)
             {
                 std::cout << "pnp_in" << std::endl;

@@ -127,6 +127,8 @@ void WrapperCar::update() {
 
 bool WrapperCar::getTarget(Eigen::Vector4d& pose_rotate, const double fly_delay, const double rotate_delay, const double shoot_delay) {
     rm::AntitopV3* antitop = nullptr;
+    Eigen::Vector4d pose_rotate_abs;
+    Eigen::Matrix4d trans_head2world;
 
     if (id_ == rm::ARMOR_ID_INFANTRY_3 || id_ == rm::ARMOR_ID_INFANTRY_4 || id_ == rm::ARMOR_ID_INFANTRY_5) {
 
@@ -152,7 +154,18 @@ bool WrapperCar::getTarget(Eigen::Vector4d& pose_rotate, const double fly_delay,
     //y轴->左
     //z轴->上
     Eigen::Vector4d pose_shoot = track_queue_.getPose(fly_delay + shoot_delay);
-    pose_rotate = track_queue_.getPose(fly_delay + rotate_delay);
+    pose_rotate_abs = track_queue_.getPose(fly_delay + rotate_delay);
+    rm::tf_trans_head2world(trans_head2world, -Data::yaw, Data::pitch, 0.0);
+    pose_rotate = trans_head2world * pose_rotate_abs;
+
+    if(false)
+    {
+        std::cout << "yaw\t" << Data::yaw << std::endl; 
+        std::cout << "pitch\t" << Data::pitch << std::endl;
+        std::cout << "matrix world->gimbal\n" << trans_head2world << std::endl;
+        std::cout << "pose gimbal?\n" << pose_rotate << std::endl;
+    }
+
 
     Data::target_omega = antitop->getOmega();
     rm::message("target omg", Data::target_omega);

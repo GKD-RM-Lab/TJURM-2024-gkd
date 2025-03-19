@@ -62,7 +62,6 @@ extern bool state_delay_flag;
 extern double state_delay_time;
 extern int state_queue_size;
 extern int send_wait_time;
-
 };
 
 void init_debug();
