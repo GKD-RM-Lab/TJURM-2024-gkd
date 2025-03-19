@@ -93,6 +93,8 @@ void WrapperCar::push(const Target& target, TimePoint t) {
 }
 
 void WrapperCar::update() {
+    //GKDTODO (figureout what is WrapperCar::update and why use it)
+
     track_queue_.update();
 
     if (curr_armor_num_ > 1) {
@@ -102,7 +104,7 @@ void WrapperCar::update() {
 
     Eigen::Vector4d pose;
     TimePoint t;
-    if (!track_queue_.getPose(pose, t)) return;
+    // if (!track_queue_.getPose(pose, t)) return;
 
     rm::AntitopV3* antitop = nullptr;
     if (id_ == rm::ARMOR_ID_INFANTRY_3 || id_ == rm::ARMOR_ID_INFANTRY_4 || id_ == rm::ARMOR_ID_INFANTRY_5) {
@@ -120,7 +122,7 @@ void WrapperCar::update() {
         rm::message("antitop armor", 4);
     }
 
-    antitop->push(pose, t);
+    // antitop->push(pose, t);
 }
 
 bool WrapperCar::getTarget(Eigen::Vector4d& pose_rotate, const double fly_delay, const double rotate_delay, const double shoot_delay) {
