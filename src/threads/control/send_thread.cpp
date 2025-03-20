@@ -230,24 +230,24 @@ void Control::send_thread() {
         }
             
         
-        shoot_speed = 26.7;
+        shoot_speed = 14;
 
         for(int i = 0; i < iteration_num; i++) {
             fly_delay = getFlyDelay(target_yaw, target_pitch, shoot_speed, pose(0, 0), pose(1, 0), pose(2, 0));
             fire = objptr->getTarget(pose, fly_delay, rotate_delay, shoot_delay);
             
-            if(false)
+            if(true)
             {
                 std::cout << "<--- IN ---" << std::endl;
                 std::cout << "shoot_speed" << shoot_speed << std::endl;
-                std::cout << "pose_x" << pose(0, 0) << std::endl;
-                std::cout << "pose_y" << pose(1, 0) << std::endl;
-                std::cout << "pose_z" << pose(2, 0) << std::endl;
+                std::cout << "pose_x: " << pose(0, 0) << std::endl;
+                std::cout << "pose_y: " << pose(1, 0) << std::endl;
+                std::cout << "pose_z: " << pose(2, 0) << std::endl;
                 std::cout << "--- OUT --->" << std::endl;
                 std::cout << "fly_delay" << fly_delay << "\n\n\n\n\n" << std::endl;
             }
         }
-        std::cout << "fire\t" << fire << std::endl;
+        // std::cout << "fire\t" << fire << std::endl;
 
         fly_delay = 0;
 
@@ -293,7 +293,7 @@ void Control::send_thread() {
         
         if (get_frame.exchange(false)) {    //sync 
             {
-                send_control(socket_interface.pkg.yaw + target_yaw, socket_interface.pkg.pitch - target_pitch);                
+                send_control(socket_interface.pkg.yaw + target_yaw, socket_interface.pkg.pitch - target_pitch);
                 timer2.end();
                 // std::cout << "pitch div" << target_pitch << "\tpitch imui" << socket_interface.pkg.pitch << "\tfps" << 1000/timer2.read() << std::endl;
                 timer2.begin();

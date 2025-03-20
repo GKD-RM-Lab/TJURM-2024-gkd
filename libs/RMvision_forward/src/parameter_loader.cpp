@@ -150,11 +150,13 @@ void writeMatricesToFile(const std::string& filename) {
 
 //读取相机外参
 void readCameraExtrinsics(const std::string& filename) {
+    std::cout << "path: !: " << filename << std::endl;
     cv::FileStorage fs(filename, cv::FileStorage::READ);
 
     cv::Mat cvRotate, cvTrans;
     fs["rotate_pnp2hea"] >> cvRotate;
     fs["trans_pnp2head"] >> cvTrans;
+    std::cout << "matrix: \n" << cvTrans << std::endl;
     fs.release();
 
     // 将 cv::Mat 转换回 Eigen::Matrix

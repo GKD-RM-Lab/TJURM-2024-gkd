@@ -130,12 +130,6 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
             target.armor_yaw_world = rm::solveYawPnP(
                 frame->yaw, intrinsic_matrix, distortion_coeffs, trans_pnp2head, rotate_pnp2head, pos_camera, *Armor3D, armor.four_points, 
                 rotate_head2world, trans_head2world, armor.id, plus_pnp_cost_image);
-            //GKDTODO
-            //更改了solveYawPnP的逻辑，现在得到的结果是<相对于云台>的装甲板坐标
-            //在这里，需要把它转换为相对于世界的
-            //第一步需要转换为相对于云台中心的坐标
-            //第二步需要转换为相对于世界的坐标，通过yaw pitch roll旋转
-            
             
             rm::tf_trans_head2world(trans_head2world, frame->yaw, -frame->pitch, 0.0);
             target.pose_world = trans_head2world * trans_pnp2head * pos_camera;
@@ -150,7 +144,7 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
                 std::cout << "pitch \t" << frame->pitch << std::endl;
             }
                 /*debug*/
-            if(false)
+            if(true)
             {
                 std::cout << "pnp_in" << std::endl;
                 std::cout << "frame->yaw" << frame->yaw << std::endl;
@@ -164,7 +158,7 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
                 std::cout << "armor.id" << armor.id << std::endl;
                 std::cout << "plus_pnp_cost_image" << plus_pnp_cost_image << std::endl;
                 std::cout << "pnp_out" << std::endl;
-                std::cout << "pose_world" << pose_world << std::endl;
+                std::cout << "pose_cam" << pos_camera << std::endl;
                 std::cout << "frame_yaw" << frame->yaw << std::endl;
                 std::cout << "frame_pitch" << frame->pitch << std::endl;
                 std::cout << "frame_roll" << frame->roll << std::endl;

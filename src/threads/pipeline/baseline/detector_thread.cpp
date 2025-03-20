@@ -141,7 +141,7 @@ void Pipeline::detector_baseline_thread(
         /*------可视化------*/
         timer2.begin();
         //输出识别信息&绘图(可视化)
-        if(false)
+        if(true)
         {
             inputImage.copyTo(label_image);
             label_image = model.visual_label(label_image, result);
