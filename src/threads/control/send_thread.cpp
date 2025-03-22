@@ -230,7 +230,7 @@ void Control::send_thread() {
         }
             
         
-        shoot_speed = 14;
+        shoot_speed = 25;
 
         for(int i = 0; i < iteration_num; i++) {
             fly_delay = getFlyDelay(target_yaw, target_pitch, shoot_speed, pose(0, 0), pose(1, 0), pose(2, 0));

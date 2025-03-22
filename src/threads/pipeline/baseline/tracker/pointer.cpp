@@ -127,7 +127,7 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame)
         threshold_from_hist = std::clamp(threshold_from_hist, 10, 100);
         rm::getBinary(gray, binary, threshold_from_hist, rm::BINARY_METHOD_DIRECT_THRESHOLD);
 
-        if (Data::image_flag && Data::binary_flag || true)
+        if (Data::image_flag && Data::binary_flag || VISON_DEBUG)
         { // debug
             cv::imshow("gray", gray);
             cv::imshow("binary", binary);
@@ -174,7 +174,7 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame)
 
         // 当yolo识别出完整四点时，不使用传统算法识别四点
         // DEBUG deactive yolo 4 points <- TODO CHECK
-        if (yolo_rect.four_points.size() == 4) // debug
+        if (yolo_rect.four_points.size() == 4 && false) // debug
         {
             // 移植四点数据
             armor.four_points = yolo_rect.four_points;

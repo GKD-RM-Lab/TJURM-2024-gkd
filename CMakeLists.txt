@@ -7,7 +7,7 @@ set(CMAKE_BUILD_TYPE DEBUG)
 add_compile_options(-g3)
 
 # 目标兵种保持要选的即可
-add_definitions(-DTJURM_INFANTRY)
+add_definitions(-DTJURM_INFANTRY -DVISON_DEBUG=1)
 
 # ============= 必须保留的原有配置 =============
 # OpenRM核心库配置（必须保留！）

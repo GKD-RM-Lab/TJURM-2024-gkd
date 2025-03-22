@@ -19,6 +19,10 @@
 //前端参数loader
 #include "parameter_loader.hpp"
 
+//cam calib
+#include "cam_calibration.hpp"
+
+
 std::mutex hang_up_mutex;
 std::condition_variable hang_up_cv;
 
@@ -45,6 +49,8 @@ int main(int argc, char** argv) {
     /*相机读取线程*/
     std::thread cameraThread(HIKcamtask);
     cv::Mat inputImage;
+
+    // calibration_main();
 
 
     //debug
