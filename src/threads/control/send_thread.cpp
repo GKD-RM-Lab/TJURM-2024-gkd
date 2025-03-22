@@ -217,7 +217,7 @@ void Control::send_thread() {
         auto objptr = garage->getObj(Data::target_id);
         objptr->getTarget(pose, 0.0, 0.0, 0.0);
 
-        if(true)
+        if(false)
         {
             timer1.end();
             // std::cout << "pose\n" << pose << std::endl;

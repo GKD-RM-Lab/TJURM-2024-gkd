@@ -103,11 +103,11 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
         if (obj_size == rm::ARMOR_SIZE_UNKNOWN) curr_size = armor.size;
         else curr_size = obj_size;
 
-        if(curr_size == rm::ARMOR_SIZE_BIG_ARMOR) {
+        if(curr_size == rm::ARMOR_SIZE_BIG_ARMOR || armor.id == 0) {
             if(armor.color == rm::ARMOR_COLOR_RED) Armor3D = BigArmorRed3D;
             else if(armor.color == rm::ARMOR_COLOR_BLUE) Armor3D = BigArmorBlue3D;
             else continue;
-        } else if(curr_size == rm::ARMOR_SIZE_SMALL_ARMOR) {
+        } else if(curr_size == rm::ARMOR_SIZE_SMALL_ARMOR || true) {
             if(armor.color == rm::ARMOR_COLOR_RED) Armor3D = SmallArmorRed3D;
             else if(armor.color == rm::ARMOR_COLOR_BLUE) Armor3D = SmallArmorBlue3D;
             else continue;
