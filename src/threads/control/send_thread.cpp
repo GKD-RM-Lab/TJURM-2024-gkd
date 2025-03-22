@@ -217,7 +217,7 @@ void Control::send_thread() {
         auto objptr = garage->getObj(Data::target_id);
         objptr->getTarget(pose, 0.0, 0.0, 0.0);
 
-        if(false)
+        if(true)
         {
             timer1.end();
             // std::cout << "pose\n" << pose << std::endl;
@@ -236,7 +236,7 @@ void Control::send_thread() {
             fly_delay = getFlyDelay(target_yaw, target_pitch, shoot_speed, pose(0, 0), pose(1, 0), pose(2, 0));
             fire = objptr->getTarget(pose, fly_delay, rotate_delay, shoot_delay);
             
-            if(true)
+            if(false)
             {
                 std::cout << "<--- IN ---" << std::endl;
                 std::cout << "shoot_speed" << shoot_speed << std::endl;
@@ -293,7 +293,7 @@ void Control::send_thread() {
         
         if (get_frame.exchange(false)) {    //sync 
             {
-                send_control(socket_interface.pkg.yaw + target_yaw, socket_interface.pkg.pitch - target_pitch);
+                send_control(socket_interface.pkg.yaw + target_yaw, -target_pitch);
                 timer2.end();
                 // std::cout << "pitch div" << target_pitch << "\tpitch imui" << socket_interface.pkg.pitch << "\tfps" << 1000/timer2.read() << std::endl;
                 timer2.begin();

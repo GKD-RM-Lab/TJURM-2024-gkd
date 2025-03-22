@@ -125,6 +125,27 @@ void WrapperCar::update() {
     // antitop->push(pose, t);
 }
 
+
+inline void fuckWorld(
+    Eigen::Matrix<double, 4, 4>& matrix_trans,
+    const double yaw,
+    const double pitch
+) {
+    Eigen::Matrix<double, 4, 4> rotate_yaw, rotate_pitch;
+
+    rotate_yaw << cos(yaw), -sin(yaw), 0, 0,
+                  sin(yaw),  cos(yaw), 0, 0,
+                         0,         0, 1, 0,
+                         0,         0, 0, 1;
+
+    rotate_pitch << cos(pitch), 0, -sin(pitch), 0,
+                             0, 1,           0, 0,
+                    sin(pitch), 0,  cos(pitch), 0,
+                             0, 0,           0, 1;
+
+    matrix_trans = rotate_yaw * rotate_pitch;
+}
+
 bool WrapperCar::getTarget(Eigen::Vector4d& pose_rotate, const double fly_delay, const double rotate_delay, const double shoot_delay) {
     rm::AntitopV3* antitop = nullptr;
     Eigen::Vector4d pose_rotate_abs;
@@ -146,7 +167,7 @@ bool WrapperCar::getTarget(Eigen::Vector4d& pose_rotate, const double fly_delay,
     }
     Eigen::Vector4d pose_shoot = track_queue_.getPose(fly_delay + shoot_delay);
     pose_rotate_abs = track_queue_.getPose(fly_delay + rotate_delay);
-    rm::tf_trans_head2world(trans_head2world, -Data::yaw, Data::pitch, 0.0);
+    rm::tf_trans_head2world(trans_head2world, -Data::yaw, 0.);
     pose_rotate = trans_head2world * pose_rotate_abs;
 
     if(false)

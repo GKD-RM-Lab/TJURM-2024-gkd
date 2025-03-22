@@ -131,7 +131,7 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
                 frame->yaw, intrinsic_matrix, distortion_coeffs, trans_pnp2head, rotate_pnp2head, pos_camera, *Armor3D, armor.four_points, 
                 rotate_head2world, trans_head2world, armor.id, plus_pnp_cost_image);
             
-            rm::tf_trans_head2world(trans_head2world, frame->yaw, -frame->pitch, 0.0);
+            rm::tf_trans_head2world(trans_head2world, frame->yaw, frame->pitch);
             target.pose_world = trans_head2world * trans_pnp2head * pos_camera;
             
             if(false)
@@ -144,7 +144,7 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
                 std::cout << "pitch \t" << frame->pitch << std::endl;
             }
                 /*debug*/
-            if(true)
+            if(false)
             {
                 std::cout << "pnp_in" << std::endl;
                 std::cout << "frame->yaw" << frame->yaw << std::endl;

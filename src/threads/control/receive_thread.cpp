@@ -86,7 +86,7 @@ void Control::receive_thread() {
         }
 
         Data::yaw   = socket_interface.pkg.yaw;
-        Data::pitch = socket_interface.pkg.pitch;
+        Data::pitch = -socket_interface.pkg.pitch;
         Data::roll  = 0;
         // std::cout << "run here" << std::endl;
 
