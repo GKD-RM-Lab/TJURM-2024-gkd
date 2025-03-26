@@ -23,19 +23,12 @@ enum ROBOT_MODE
 
 struct Vison_control
 {
-    /*       导航部分       */
     uint8_t header;
-    // 线速度 m/s
-    float linear_vx;
-    float linear_vy;
-    // 旋转角速度 rad/s
-    float angular;
-    // 欧拉角
     float yaw_set;
     float pitch_set;
+    bool fire;
 
-
-    ROBOT_MODE mode = ROBOT_MODE::ROBOT_IDLE;
+    ROBOT_MODE mode;
 } __attribute__((packed));
 
 void init_send(std::string ip)
@@ -60,13 +53,14 @@ void init_send(std::string ip)
     }
 }
 
-void send_control(double yaw_set, double pitch_set)
+void send_control(double yaw_set, double pitch_set, bool fire)
 {
     Vison_control pkg{};
 
-    pkg.header = 0x6A;
+    pkg.header = 0xb6;
     pkg.yaw_set = yaw_set;
     pkg.pitch_set = pitch_set;
+    pkg.fire = fire;
 
 
     //printf("send control\n");

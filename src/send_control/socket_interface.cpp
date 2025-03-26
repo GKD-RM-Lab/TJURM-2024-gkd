@@ -12,7 +12,7 @@ namespace IO
             if (n > 0) {
                 //
                 memcpy(&pkg, buffer, sizeof pkg);
-                // printf("receive pkg yaw:%.6f\tpitch:%.6f\n", pkg.yaw, pkg.pitch);
+                //printf("receive pkg yaw:%.6f\tpitch:%.6f\n", pkg.yaw, pkg.pitch);
             }
         }
     }

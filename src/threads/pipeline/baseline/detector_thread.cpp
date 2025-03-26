@@ -14,6 +14,7 @@ using namespace rm;
 
 //timer
 #include "timer.hpp"
+#include "send_control/socket_interface.hpp"
 
 
 void Pipeline::detector_baseline_thread(
@@ -128,12 +129,22 @@ void Pipeline::detector_baseline_thread(
         HIKimage.copyTo(inputImage);
         HIKframemtx.unlock();
         if(inputImage.empty()) continue;
-        // cv::flip(inputImage, inputImage, -1);
+        cv::flip(inputImage, inputImage, -1);
 
         /*------识别------*/
         timer1.begin();
         //推理
         result = model.work(inputImage);
+        std::vector<yolo_kpt::Object> enemy;
+        for (auto& obj : result)
+        {
+            bool red = obj.label >= 7;
+            if (red != socket_interface.pkg.red)
+            {
+                enemy.push_back(obj);
+            }
+        }
+        result = enemy;
         //角点预处理
         model.pnp_kpt_preprocess(result);
         timer1.end();

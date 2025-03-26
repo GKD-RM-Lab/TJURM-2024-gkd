@@ -252,7 +252,7 @@ void Control::send_thread() {
         fly_delay = 0;
 
         if (fabs(pose(0, 0) + pose(1, 0) + pose(2, 0)) < 1e-3) {
-            send_control(socket_interface.pkg.yaw, target_pitch);
+            send_control(socket_interface.pkg.yaw, target_pitch, false);
             continue;
         }
 
@@ -293,7 +293,7 @@ void Control::send_thread() {
         
         if (get_frame.exchange(false)) {    //sync 
             {
-                send_control(socket_interface.pkg.yaw + target_yaw, -target_pitch);
+                send_control(socket_interface.pkg.yaw + target_yaw, -target_pitch, fire);
                 timer2.end();
                 // std::cout << "pitch div" << target_pitch << "\tpitch imui" << socket_interface.pkg.pitch << "\tfps" << 1000/timer2.read() << std::endl;
                 timer2.begin();

@@ -133,6 +133,7 @@ bool Pipeline::locater(std::shared_ptr<rm::Frame> frame) {
             
             rm::tf_trans_head2world(trans_head2world, frame->yaw, frame->pitch);
             target.pose_world = trans_head2world * trans_pnp2head * pos_camera;
+            //std::cout << "pos camera \n" << trans_pnp2head * pos_camera << std::endl;
             
             if(false)
             {

@@ -15,6 +15,7 @@ struct ReceiveGimbalInfo
 	uint8_t header;
     float yaw;
     float pitch;
+    bool red;
 } __attribute__((packed));
 
 namespace IO
