@@ -73,7 +73,7 @@ int visulization_task()
                 , cv::FONT_HERSHEY_SIMPLEX, 2, cv::Scalar(0,255,0), 6);
         }
 
-        cv::imshow("cam", frame);
+        // cv::imshow("cam", frame);
 
     }
     cv::destroyAllWindows();

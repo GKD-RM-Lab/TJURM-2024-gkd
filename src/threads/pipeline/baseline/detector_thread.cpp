@@ -128,7 +128,7 @@ void Pipeline::detector_baseline_thread(
         HIKimage.copyTo(inputImage);
         HIKframemtx.unlock();
         if(inputImage.empty()) continue;
-        // cv::flip(inputImage, inputImage, -1);
+        cv::flip(inputImage, inputImage, -1);
 
         /*------识别------*/
         timer1.begin();
