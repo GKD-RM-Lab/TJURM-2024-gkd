@@ -5,7 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "/usr/local/include/opencv4",
-                "/usr/local/include/openrm"
+                "/usr/local/include/openrm",
+                "/usr/include/eigen3"
             ],
             "defines": [],
             "cStandard": "c17",

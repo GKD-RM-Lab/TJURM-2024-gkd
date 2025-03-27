@@ -47,6 +47,14 @@ typedef struct
     cv::Mat distortion_coeffs;
     Eigen::Matrix3d rotate_pnp2hea;
     Eigen::Matrix4d trans_pnp2head;
+    /*赛前新增*/
+    int shoot_speed = 0;
+    int is_camreverse = 0;
+    int is_filted = 1;
+    int is_imshow = 0;
+    int is_pose_out = 0;
+    int is_target_out = 0;
+
 
 } parameter_loader_t;
 

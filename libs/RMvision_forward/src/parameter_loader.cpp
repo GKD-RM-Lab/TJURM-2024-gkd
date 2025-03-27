@@ -111,6 +111,17 @@ int yaml_load(const std::string& filepath, parameter_loader_t& params) {
     //相机外参
     readCameraExtrinsics(params.camera_extrinsics_path);
 
+    /*赛前新增*/
+    fs["shoot_speed"] >> params.shoot_speed;
+    fs["is_reverse"] >> params.is_camreverse;
+    fs["is_filter"] >> params.is_filted;
+    fs["is_imshow"] >> params.is_imshow;
+    fs["is_pose_out"] >> params.is_pose_out;
+    fs["is_target_out"] >> params.is_target_out;
+
+
+
+
     fs.release();
     std::cout << "参数已从 " << filepath << " 加载" << std::endl;
     std::cout << "trans_pnp2head" << std::endl;
@@ -121,6 +132,9 @@ int yaml_load(const std::string& filepath, parameter_loader_t& params) {
     std::cout << params.intrinsic_matrix << std::endl;
     std::cout << "distortion_coeffs" << std::endl;
     std::cout << params.distortion_coeffs << std::endl;
+    std::cout << "shoot speed = " << params.shoot_speed << std::endl;
+    std::cout << "is cam reverse = " << params.is_camreverse << std::endl;
+
     return 0;
 }
 
