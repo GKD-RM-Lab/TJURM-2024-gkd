@@ -21,7 +21,7 @@ calib_yaml_path: "/etc/openrm/forward_config/camera_intrinsics.yaml"
 # calib_yaml_path: "/home/gkd/Opencl_vision/TJURM-2024-gkd/config/forward_config/calib"
 camera_extrinsics_path: "/etc/openrm/forward_config/camera_extrinsics.yaml"
 cam_gain: 16.0
-cam_exptime: 4000
+cam_exptime: 15000
 framerate: 120
 imshow_en: 1
 debug_info: 1
