@@ -54,6 +54,7 @@ void init_send(std::string ip)
 }
 
 void send_control(double yaw_set, double pitch_set, bool fire)
+void send_control(double yaw_set, double pitch_set, bool fire)
 {
     Vison_control pkg{};
 
@@ -61,9 +62,10 @@ void send_control(double yaw_set, double pitch_set, bool fire)
     pkg.yaw_set = yaw_set;
     pkg.pitch_set = pitch_set;
     pkg.fire = fire;
+    pkg.fire = fire;
 
 
-    //printf("send control\n");
+    // printf("send control\n");
     auto n = sendto(
     sockfd,
     (const char *)(&pkg),

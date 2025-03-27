@@ -46,6 +46,7 @@ int visulization_task()
         HIKframemtx.lock();
         HIKimage.copyTo(frame);
         HIKframemtx.unlock();
+        cv::flip(frame, frame, -1);
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
         if(frame.empty()) continue;
         if(cv::waitKey(1) == 'q') break;
