@@ -174,7 +174,7 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame)
 
         // 当yolo识别出完整四点时，不使用传统算法识别四点
         // DEBUG deactive yolo 4 points <- TODO CHECK
-        if (yolo_rect.four_points.size() == 4) // debug
+        if (yolo_rect.four_points.size() == 4 && false) // debug
         {
             // 移植四点数据
             armor.four_points = yolo_rect.four_points;
