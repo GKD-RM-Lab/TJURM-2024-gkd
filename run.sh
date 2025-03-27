@@ -125,12 +125,26 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${LIB_PATH}
 # ========== 新增：前端配置文件安装 ==========
 FORWARD_CONFIG_DIR="/etc/openrm/forward_config"
 if [ ! -d "${FORWARD_CONFIG_DIR}" ]; then
-    sudo mkdir -p ${FORWARD_CONFIG_DIR}
+    sudo mkdir -p "${FORWARD_CONFIG_DIR}"
     sudo chmod -R 777 /etc/openrm
 fi
-#覆盖配置文件
-# sudo rm -r ${FORWARD_CONFIG_DIR}/*
-sudo cp -r ${VISION_FORWARD_DIR}/config/* ${FORWARD_CONFIG_DIR}/
+
+VISION_FORWARD_DIR="../libs/RMvision_forward"
+
+# 如果需要先清空旧文件，可视情况启用
+sudo rm -rf "${FORWARD_CONFIG_DIR}"/*
+
+TARGET="$1"
+case "$TARGET" in
+    hero|infantry|sentry_l|sentry_r)
+        echo "Copy ${TARGET} config to ${FORWARD_CONFIG_DIR} ..."
+        sudo cp -r "${VISION_FORWARD_DIR}/config/${TARGET}/"* "${FORWARD_CONFIG_DIR}/"
+        ;;
+    *)
+        echo "无效或未指定兵种参数，跳过拷贝前端配置文件"
+        exit 1
+        ;;
+esac
 
 
 

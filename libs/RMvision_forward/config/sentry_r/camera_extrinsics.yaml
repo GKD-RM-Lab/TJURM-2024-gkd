@@ -1,0 +1,17 @@
+%YAML:1.0
+---
+rotate_pnp2hea: !!opencv-matrix
+   rows: 3
+   cols: 3
+   dt: d
+   data: [ 1., 0., 0.,
+          0., 1., 0.,
+           0., 0., 1. ]
+trans_pnp2head: !!opencv-matrix
+   rows: 4
+   cols: 4
+   dt: d
+   data: [ 1., 0., 0., 75.,  #x offset(相机在云台前面为+)，单位mm
+           0., 1., 0., -66.25,   #y offest(相机在云台左边为+)，单位mm
+           0., 0., 1., 41.35,    #y offest(相机在云台上边为+)，单位mm
+           0., 0., 0., 1. ]
