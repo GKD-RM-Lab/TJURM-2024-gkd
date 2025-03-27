@@ -1,5 +1,7 @@
 #include "threads/pipeline.h"
 
+#include "parameter_loader.hpp"
+
 using namespace rm;
 
 static double roi_extend_w;
@@ -127,7 +129,7 @@ bool Pipeline::pointer(std::shared_ptr<rm::Frame> frame)
         threshold_from_hist = std::clamp(threshold_from_hist, 10, 100);
         rm::getBinary(gray, binary, threshold_from_hist, rm::BINARY_METHOD_DIRECT_THRESHOLD);
 
-        if (Data::image_flag && Data::binary_flag || VISON_DEBUG)
+        if (Data::image_flag && Data::binary_flag || params.is_imshow)
         { // debug
             cv::imshow("gray", gray);
             cv::imshow("binary", binary);

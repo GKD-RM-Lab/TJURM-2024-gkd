@@ -16,6 +16,7 @@ using namespace rm;
 #include "timer.hpp"
 #include "send_control/socket_interface.hpp"
 
+#include "parameter_loader.hpp"
 
 void Pipeline::detector_baseline_thread(
     std::mutex& mutex_in, bool& flag_in, std::shared_ptr<rm::Frame>& frame_in, 
@@ -152,7 +153,7 @@ void Pipeline::detector_baseline_thread(
         /*------可视化------*/
         timer2.begin();
         //输出识别信息&绘图(可视化)
-        if(VISON_DEBUG)
+        if(params.is_imshow)
         {
             inputImage.copyTo(label_image);
             label_image = model.visual_label(label_image, result);

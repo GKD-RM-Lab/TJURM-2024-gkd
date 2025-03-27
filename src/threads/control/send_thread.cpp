@@ -10,6 +10,9 @@
 
 #include "timer.hpp"
 
+#include "parameter_loader.hpp"
+
+
 using namespace rm;
 
 static double shoot_speed, shoot_delay;
@@ -217,7 +220,7 @@ void Control::send_thread() {
         auto objptr = garage->getObj(Data::target_id);
         objptr->getTarget(pose, 0.0, 0.0, 0.0);
 
-        if(false)
+        if(params.is_pose_out)
         {
             timer1.end();
             // std::cout << "pose\n" << pose << std::endl;
@@ -230,7 +233,7 @@ void Control::send_thread() {
         }
             
         
-        shoot_speed = 25;
+        shoot_speed = params.shoot_speed;
 
         for(int i = 0; i < iteration_num; i++) {
             fly_delay = getFlyDelay(target_yaw, target_pitch, shoot_speed, pose(0, 0), pose(1, 0), pose(2, 0));
@@ -295,7 +298,10 @@ void Control::send_thread() {
             {
                 send_control(socket_interface.pkg.yaw + target_yaw, -target_pitch, fire);
                 timer2.end();
-                // std::cout << "pitch div" << target_pitch << "\tpitch imui" << socket_interface.pkg.pitch << "\tfps" << 1000/timer2.read() << std::endl;
+                if(params.is_target_out){
+                std::cout << "target pitch \t" << -target_pitch << "\ttarget yaw \t" << socket_interface.pkg.yaw 
+                        << "\tfps" << 1000/timer2.read() << std::endl;
+                }
                 timer2.begin();
             }
 
