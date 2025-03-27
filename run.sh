@@ -33,27 +33,25 @@ if [ ! -d "config" ]; then
     ln -s /etc/openrm ./config
 fi
 
-
 if [ ! -d "build" ]; then 
     mkdir build
 fi
 
 imshow=0
+verbose=0
 
+# 注意：这里 *不再* 把 v 写进 getopts 的选项列表中
 while getopts ":rcg:ls" opt; do
     case $opt in
         r)
             echo -e "${yellow}<--- delete 'build' --->\n${reset}"
             sudo rm -rf build
             mkdir build
-            shift
             ;;
-
         c)
             sudo cp -r data/uniconfig/* /etc/openrm/
             sudo chmod -R 777 /etc/openrm
             exit 0
-            shift
             ;;
         g)
             git_message=$OPTARG
@@ -63,19 +61,15 @@ while getopts ":rcg:ls" opt; do
             git commit -m "$git_message"
             git push
             exit 0
-            shift
             ;;
-
         l)
             cd ../OpenRM
             sudo ./run.sh
             cd ../TJURM-2024
             exit 0
-            shift
             ;;
         s)
             imshow=1
-            shift
             ;;
         \?)
             echo -e "${red}\n--- Unavailable param: -$OPTARG ---\n${reset}"
@@ -83,19 +77,19 @@ while getopts ":rcg:ls" opt; do
         :)
             echo -e "${red}\n--- param -$OPTARG need a value ---\n${reset}"
             ;;
-        esac
-    done
+    esac
+done
 
+# 将所有已处理过的选项移除，剩下的即是非选项参数
+shift $((OPTIND - 1))
 
 echo -e "${yellow}<--- Start CMake --->${reset}"
 cd build
 cmake ..
 
-
 echo -e "${yellow}\n<--- Start Make --->${reset}"
 max_threads=$(cat /proc/cpuinfo | grep "processor" | wc -l)
 make -j "$max_threads"
-
 
 echo -e "${yellow}\n<--- Total Lines --->${reset}"
 echo -e "${blue}        $total${reset}"
@@ -129,11 +123,9 @@ if [ ! -d "${FORWARD_CONFIG_DIR}" ]; then
     sudo chmod -R 777 /etc/openrm
 fi
 
-VISION_FORWARD_DIR="../libs/RMvision_forward"
-
-# 如果需要先清空旧文件，可视情况启用
 sudo rm -rf "${FORWARD_CONFIG_DIR}"/*
 
+# 第一个非选项参数是兵种
 TARGET="$1"
 case "$TARGET" in
     hero|infantry|sentry_l|sentry_r)
@@ -146,18 +138,24 @@ case "$TARGET" in
         ;;
 esac
 
-
+# 再 shift 掉兵种参数，然后看下一个是否是 -v
+shift
+if [ "$1" = "-v" ]; then
+    verbose=1
+fi
 
 sudo rm /usr/local/bin/TJURM-2024
 sudo cp TJURM-2024 /usr/local/bin/
 sudo pkill TJURM-2024
 sudo chmod 777 /dev/tty*
 
-if [ $imshow = 1 ]; then
+# 根据是否选择 -v / -s 决定调用
+if [ $verbose = 1 ]; then
+    TJURM-2024 -v
+elif [ $imshow = 1 ]; then
     TJURM-2024 -s
 else
     TJURM-2024
-
 fi
 
 /etc/openrm/guard.sh

@@ -33,7 +33,11 @@ int main(int argc, char** argv) {
     auto control = Control::get_instance();
 
     int option;
-    while ((option = getopt(argc, argv, "hs")) != -1) {
+
+    para_load("/etc/openrm/forward_config/config.yaml");
+
+    // if(argc > 1) std::cout << "!!!!!!!!!!" << argv[1] << std::endl;
+    while ((option = getopt(argc, argv, "hsv")) != -1) {
         switch (option) {
             case 's':
                 Data::imshow_flag = true;
@@ -41,10 +45,12 @@ int main(int argc, char** argv) {
             case 'h':
                 std::cout << "Usage: " << argv[0] << " [-h] [-s] " << std::endl;
                 break;
+            case 'v':
+                std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!imshow enable" << std::endl;
+                params.is_imshow = 1;
         }
     }
     
-    para_load("/etc/openrm/forward_config/config.yaml");
 
     /*相机读取线程*/
     std::thread cameraThread(HIKcamtask);
