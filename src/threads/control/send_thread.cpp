@@ -53,8 +53,8 @@ static void init_send() {
     if (speed_write_flag) {
         speed_file.open(speed_save_path, std::ios_base::app);
     }
-    if(params.sentry_head_type == 1){
-        init_send("192.168.10.2"); // 自瞄-电控不在同一个nuc
+    if(params.sentry_head_type == 2){
+        init_send("192.168.10.2"); // 自瞄-电控不在同一个nuc，右头
     }else{
         init_send("127.0.0.1");
     }

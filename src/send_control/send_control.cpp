@@ -59,8 +59,8 @@ void send_control(double yaw_set, double pitch_set, bool fire)
 {
     Vison_control pkg{};
 
-    if(params.sentry_head_type == 1){
-        pkg.header = 0x6b;  //哨兵左头 自瞄和电控在不同nuc
+    if(params.sentry_head_type == 2){
+        pkg.header = 0x6b;  //哨兵右头 自瞄和电控在不同nuc
     }else{
         pkg.header = 0x6A;
     }
