@@ -296,9 +296,9 @@ void Control::send_thread() {
         
         if (get_frame.exchange(false)) {    //sync 
             {
-                if(socket_interface.pkg.yaw + target_yaw < 0.001) {
+                // if(socket_interface.pkg.yaw + target_yaw < 0.001) {
                     send_control(socket_interface.pkg.yaw + target_yaw, -target_pitch, fire);
-                }
+                // }
                 timer2.end();
                 if(params.is_target_out){
                 std::cout << "target pitch \t" << -target_pitch << "\ttarget yaw \t" << socket_interface.pkg.yaw 
