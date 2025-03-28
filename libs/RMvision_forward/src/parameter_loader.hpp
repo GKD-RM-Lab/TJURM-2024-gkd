@@ -54,6 +54,7 @@ typedef struct
     int is_imshow = 0;
     int is_pose_out = 0;
     int is_target_out = 0;
+    int sentry_head_type = 0;
 
 
 } parameter_loader_t;

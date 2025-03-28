@@ -118,7 +118,7 @@ int yaml_load(const std::string& filepath, parameter_loader_t& params) {
     fs["is_imshow"] >> params.is_imshow;
     fs["is_pose_out"] >> params.is_pose_out;
     fs["is_target_out"] >> params.is_target_out;
-
+    fs["sentry_head_type"] >> params.sentry_head_type;
 
 
 
@@ -134,6 +134,8 @@ int yaml_load(const std::string& filepath, parameter_loader_t& params) {
     std::cout << params.distortion_coeffs << std::endl;
     std::cout << "shoot speed = " << params.shoot_speed << std::endl;
     std::cout << "is cam reverse = " << params.is_camreverse << std::endl;
+    std::cout << "head type = " << params.sentry_head_type << std::endl;
+
 
     return 0;
 }

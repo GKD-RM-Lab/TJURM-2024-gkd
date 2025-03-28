@@ -6,6 +6,8 @@
 #include <termios.h>
 #include <stdio.h>
 
+#include "parameter_loader.hpp"
+
 int64_t port_num = 11452;
 int sockfd;
 sockaddr_in serv_addr;
@@ -57,7 +59,11 @@ void send_control(double yaw_set, double pitch_set, bool fire)
 {
     Vison_control pkg{};
 
-    pkg.header = 0x6A;
+    if(params.sentry_head_type == 1){
+        pkg.header = 0x6b;  //哨兵左头 自瞄和电控在不同nuc
+    }else{
+        pkg.header = 0x6A;
+    }
     pkg.yaw_set = yaw_set;
     pkg.pitch_set = pitch_set;
     pkg.fire = fire;

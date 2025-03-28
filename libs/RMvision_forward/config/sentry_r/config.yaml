@@ -35,3 +35,4 @@ is_filter: 0        #优先级筛选
 is_imshow: 0        #默认是否开启可视化
 is_pose_out: 0      #终端是否输出pose
 is_target_out: 1    #终端是否输出弹道yaw pitch
+sentry_head_type: 2 #0-非烧饼，1-左头，2-右头
