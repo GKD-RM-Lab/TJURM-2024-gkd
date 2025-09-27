@@ -38,7 +38,7 @@ if [ ! -d "build" ]; then
 fi
 
 imshow=0
-verbose=0
+verbose=1
 
 # 注意：这里 *不再* 把 v 写进 getopts 的选项列表中
 while getopts ":rcg:ls" opt; do

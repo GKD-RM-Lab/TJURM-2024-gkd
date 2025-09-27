@@ -25,7 +25,7 @@ if (NOT DEFINED openvino_VERSION)
 else()
     message(STATUS "Using OpenVINO version ${openvino_VERSION}")
 endif()
-
+include_directories(/usr/include/eigen3)
 # ------------------------------------------------------------------------------
 # 3. 配置海康相机 SDK
 # ------------------------------------------------------------------------------
@@ -103,3 +103,4 @@ option(ENABLE_TEMPLATE_REGISTRATION "Enables registration of TEMPLATE plugin" OF
 if(ENABLE_TEMPLATE_REGISTRATION)
     target_compile_definitions(cl_yolo PRIVATE ENABLE_TEMPLATE_REGISTRATION)
 endif()
+
